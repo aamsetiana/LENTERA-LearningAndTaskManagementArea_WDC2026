@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    /* Background mewah dengan gradasi sangat lembut */
+    background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f1f5f9 100%);
+    @apply text-[#121212] antialiased;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+}
+
+/* Kartu Bento Modern tanpa menggunakan cubic-bezier di dalam @apply */
+.bento-card {
+  @apply bg-white border border-slate-200/60 rounded-[2.5rem] p-10;
+  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.bento-card:hover {
+  @apply shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] -translate-y-2;
+}
+
+/* Animasi Masuk yang Elegan */
+.reveal {
+  opacity: 0;
+  animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}

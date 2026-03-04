@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # LENTERA (Learning & Task Management Area)
 **Tim:** SEMOGA JUARA
 **Universitas:** Universitas Kuningan
