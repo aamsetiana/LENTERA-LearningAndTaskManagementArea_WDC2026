@@ -1,8 +1,14 @@
-/** @type {import('tailwindcss').Config} */
+// tailwind.config.js
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "brand-blue": "#2563eb", // Warna Biru Lentera
+        "brand-dark": "#0f172a", // Warna Navy Profesional
+      },
+      borderRadius: {
+        bento: "2.5rem", // Konsistensi lengkungan kartu
+      },
+    },
   },
-  plugins: [],
 };
