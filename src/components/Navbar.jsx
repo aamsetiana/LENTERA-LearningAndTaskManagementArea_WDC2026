@@ -1,31 +1,31 @@
+import { BookOpen } from 'lucide-react';
+
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-xl border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-10 h-20 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 bg-black rounded-xl flex items-center justify-center shadow-2xl">
-            <span className="text-white font-bold text-lg">L</span>
+    <nav className="fixed w-full bg-white/70 backdrop-blur-xl z-50 border-b border-slate-200/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center gap-2 group cursor-pointer">
+            <div className="bg-indigo-600 p-2 rounded-xl group-hover:bg-indigo-700 transition-colors">
+              <BookOpen className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+              LENTERA
+            </span>
           </div>
-          <span className="text-lg font-black tracking-tight uppercase">
-            Lentera
-          </span>
+          <div className="hidden md:flex space-x-8">
+            <a href="#latar-belakang" className="text-sm text-slate-600 hover:text-indigo-600 font-medium transition-colors">Latar Belakang</a>
+            <a href="#fitur" className="text-sm text-slate-600 hover:text-indigo-600 font-medium transition-colors">Fitur Utama</a>
+            <a href="#cara-kerja" className="text-sm text-slate-600 hover:text-indigo-600 font-medium transition-colors">Cara Kerja</a>
+            <a href="#teknologi" className="text-sm text-slate-600 hover:text-indigo-600 font-medium transition-colors">Teknologi</a>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="hidden md:block text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">Masuk</button>
+            <button className="bg-slate-900 hover:bg-indigo-600 text-white text-sm px-5 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-indigo-500/30">
+              Coba Gratis
+            </button>
+          </div>
         </div>
-
-        <div className="hidden md:flex gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
-          {["Beranda", "Tugas", "Fokus", "Catatan"].map((item) => (
-            <a
-              key={item}
-              href="#"
-              className="hover:text-black transition-colors"
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-
-        <button className="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-xl">
-          Mulai Sekarang
-        </button>
       </div>
     </nav>
   );
