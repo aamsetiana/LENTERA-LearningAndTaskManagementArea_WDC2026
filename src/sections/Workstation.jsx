@@ -14,9 +14,9 @@ export default function Workstation() {
     return saved
       ? JSON.parse(saved)
       : [
-          { id: 1, teks: "Simulasi Sistem WDC", status: "Rencana" },
-          { id: 2, teks: "Finalisasi Presentasi", status: "Dikerjakan" },
-        ];
+        { id: 1, teks: "Simulasi Sistem WDC", status: "Rencana" },
+        { id: 2, teks: "Finalisasi Presentasi", status: "Dikerjakan" },
+      ];
   });
 
   useEffect(() => {

@@ -52,6 +52,27 @@ export default function Analytics() {
     totalTugas: 0,
   });
 
+  const [performa, setPerforma] = useState({
+    hariOnTrack: 0,
+    rataRata: 0,
+    efisiensi: 0,
+  });
+
+  const [barChartData, setBarChartData] = useState({
+    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    datasets: [],
+  });
+
+  const [doughnutChartData, setDoughnutChartData] = useState({
+    labels: [],
+    datasets: [],
+  });
+
+  const [lineChartData, setLineChartData] = useState({
+    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    datasets: [],
+  });
+
   useEffect(() => {
     // Ambil data dari localStorage
     const dataTugas = JSON.parse(localStorage.getItem('tugas_lentera')) || [];
@@ -73,6 +94,82 @@ export default function Analytics() {
       targetTercapai: persentase,
       totalTugas: total,
     });
+
+    // Hitung Performa Mingguan (Realtime dari LocalStorage)
+    const uniqueDays = new Set(dataTugas.map((t) => new Date(t.id).toDateString())).size;
+    const hariOnTrack = uniqueDays > 7 ? 7 : uniqueDays;
+    const rataRata = total > 0 ? (total / 7).toFixed(1) : 0;
+
+    setPerforma({
+      hariOnTrack: hariOnTrack,
+      rataRata: rataRata,
+      efisiensi: persentase,
+    });
+
+    // --- UPDATE CHART DATA ---
+
+    // 1. Bar Chart (Fokus Harian - Mockup Realtime: Total hari ini)
+    const today = new Date().getDay();
+    const dayIndex = today === 0 ? 6 : today - 1;
+    const dailyFocus = [0, 0, 0, 0, 0, 0, 0];
+    dailyFocus[dayIndex] = parseFloat((totalFokus / 60).toFixed(1));
+
+    setBarChartData({
+      labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      datasets: [
+        {
+          label: 'Jam Fokus',
+          data: dailyFocus,
+          backgroundColor: 'rgba(255, 139, 61, 0.8)',
+          borderRadius: 8,
+          borderSkipped: false,
+        },
+      ],
+    });
+
+    // 2. Doughnut Chart (Distribusi Status Tugas)
+    const statusCounts = { Rencana: 0, Dikerjakan: 0, Selesai: 0 };
+    dataTugas.forEach((t) => {
+      if (statusCounts[t.status] !== undefined) statusCounts[t.status]++;
+    });
+
+    setDoughnutChartData({
+      labels: ['Rencana', 'Dikerjakan', 'Selesai'],
+      datasets: [
+        {
+          data: [statusCounts.Rencana, statusCounts.Dikerjakan, statusCounts.Selesai],
+          backgroundColor: ['#FFC97A', '#FFA557', '#FF8B3D'],
+          borderWidth: 0,
+          hoverOffset: 8,
+        },
+      ],
+    });
+
+    // 3. Line Chart (Aktivitas Tugas Mingguan)
+    const weeklyActivity = [0, 0, 0, 0, 0, 0, 0];
+    dataTugas.forEach((t) => {
+      const d = new Date(t.id);
+      const day = d.getDay();
+      const idx = day === 0 ? 6 : day - 1;
+      weeklyActivity[idx]++;
+    });
+
+    setLineChartData({
+      labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+      datasets: [
+        {
+          label: 'Aktivitas Tugas',
+          data: weeklyActivity,
+          borderColor: '#FF8B3D',
+          backgroundColor: 'rgba(255, 139, 61, 0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#FF8B3D',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+      ],
+    });
   }, []);
 
   // Setup scroll reveal animation
@@ -93,27 +190,6 @@ export default function Analytics() {
 
     return () => observer.disconnect();
   }, []);
-  // Data untuk Bar Chart - Durasi Fokus Harian
-  const barChartData = {
-    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-    datasets: [
-      {
-        label: 'Jam Fokus',
-        data: [2.5, 3.0, 1.5, 2.8, 4.0, 2.2, 1.0],
-        backgroundColor: [
-          'rgba(255, 139, 61, 0.8)',
-          'rgba(255, 139, 61, 0.8)',
-          'rgba(255, 139, 61, 0.8)',
-          'rgba(255, 139, 61, 0.8)',
-          'rgba(255, 165, 87, 0.9)',
-          'rgba(255, 139, 61, 0.8)',
-          'rgba(255, 139, 61, 0.8)',
-        ],
-        borderRadius: 8,
-        borderSkipped: false,
-      },
-    ],
-  };
 
   const barChartOptions = {
     responsive: true,
@@ -134,25 +210,6 @@ export default function Analytics() {
     },
   };
 
-  // Data untuk Doughnut Chart - Distribusi Waktu Belajar
-  const doughnutChartData = {
-    labels: ['Basis Data', 'Algoritma', 'Jaringan', 'Matematika', 'Lainnya'],
-    datasets: [
-      {
-        data: [35, 25, 20, 12, 8],
-        backgroundColor: [
-          '#FF8B3D',
-          '#FFA557',
-          '#FFB968',
-          '#FFC97A',
-          '#FFD98C',
-        ],
-        borderWidth: 0,
-        hoverOffset: 8,
-      },
-    ],
-  };
-
   const doughnutChartOptions = {
     responsive: true,
     maintainAspectRatio: true,
@@ -168,32 +225,6 @@ export default function Analytics() {
         },
       },
     },
-  };
-
-  // Data untuk Line Chart - Tren Tugas Mingguan
-  const lineChartData = {
-    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
-    datasets: [
-      {
-        label: 'Tugas Selesai',
-        data: [2, 4, 2, 5, 7, 3, 1],
-        borderColor: '#FF8B3D',
-        backgroundColor: 'rgba(255, 139, 61, 0.1)',
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: '#FF8B3D',
-        pointRadius: 5,
-        pointHoverRadius: 7,
-      },
-      {
-        label: 'Target',
-        data: [4, 4, 4, 4, 4, 4, 4],
-        borderColor: 'rgba(255, 139, 61, 0.3)',
-        borderDash: [5, 5],
-        pointRadius: 0,
-        fill: false,
-      },
-    ],
   };
 
   const lineChartOptions = {
@@ -290,7 +321,7 @@ export default function Analytics() {
           <div className="reveal bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-200">
             <div className="flex items-center gap-2 mb-6">
               <PieChart className="h-5 w-5 text-orange-600" />
-              <h3 className="text-lg font-bold text-slate-900">🍩 Distribusi Waktu Belajar</h3>
+              <h3 className="text-lg font-bold text-slate-900">🍩 Distribusi Status Tugas</h3>
             </div>
             <div className="h-[280px] flex items-center justify-center">
               <Doughnut data={doughnutChartData} options={doughnutChartOptions} />
@@ -317,15 +348,15 @@ export default function Analytics() {
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-orange-50 rounded-xl">
                 <span className="text-sm font-medium text-slate-700">Hari On Track</span>
-                <span className="text-xl font-bold text-orange-600">5/7</span>
+                <span className="text-xl font-bold text-orange-600">{performa.hariOnTrack}/7</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl">
                 <span className="text-sm font-medium text-slate-700">Rata-rata Tugas/Hari</span>
-                <span className="text-xl font-bold text-emerald-600">2.0</span>
+                <span className="text-xl font-bold text-emerald-600">{performa.rataRata}</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
                 <span className="text-sm font-medium text-slate-700">Efisiensi Belajar</span>
-                <span className="text-xl font-bold text-amber-600">92%</span>
+                <span className="text-xl font-bold text-amber-600">{performa.efisiensi}%</span>
               </div>
             </div>
           </div>
