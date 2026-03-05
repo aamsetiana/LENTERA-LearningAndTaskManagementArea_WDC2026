@@ -15,7 +15,7 @@ export default function Navbar() {
           <span className="text-2xl group-hover:scale-125 transition-transform duration-500">
             🏮
           </span>
-          <span className="text-xl font-black text-[#362A1F] tracking-tighter">
+          <span className="text-xl font-black text-[#2D1810] tracking-tighter">
             Lentera.
           </span>
         </div>
@@ -24,16 +24,16 @@ export default function Navbar() {
             <a
               key={item.nama}
               href={item.link}
-              className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-[0.25em] hover:text-[#F9A826] transition-all relative group"
+              className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-[0.25em] hover:text-[#D97757] transition-all relative group"
             >
               {item.nama}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F9A826] transition-all group-hover:w-full"></span>
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#D97757] transition-all group-hover:w-full"></span>
             </a>
           ))}
         </div>
         <a
           href="#workstation"
-          className="px-6 py-2.5 bg-[#F9A826] text-[#362A1F] rounded-2xl font-bold text-[10px] tracking-widest shadow-md active:scale-95 uppercase"
+          className="px-6 py-2.5 bg-[#D97757] text-white rounded-2xl font-bold text-[10px] tracking-widest shadow-md active:scale-95 uppercase hover:bg-[#2D1810] transition-colors"
         >
           Fokus Sekarang
         </a>
