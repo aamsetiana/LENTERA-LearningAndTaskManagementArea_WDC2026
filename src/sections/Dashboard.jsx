@@ -1,0 +1,155 @@
+// src/sections/Dashboard.jsx
+import { useState, useEffect } from "react";
+
+export default function Dashboard() {
+  const [statistik, setStatistik] = useState({
+    totalTugas: 0,
+    tugasSelesai: 0,
+    totalCatatan: 0,
+    totalFokus: 0,
+    persentase: 0,
+  });
+
+  useEffect(() => {
+    // 1. Ambil data asli dari Local Storage yang sudah dibuat di section lain
+    const dataTugas = JSON.parse(localStorage.getItem("tugas_lentera")) || [];
+    const dataJurnal = JSON.parse(localStorage.getItem("jurnal_lentera")) || [];
+    const dataFokus = localStorage.getItem("total_fokus_lentera") || 0;
+
+    // 2. Hitung angka real untuk Dashboard
+    const selesai = dataTugas.filter((t) => t.status === "Selesai").length;
+    const total = dataTugas.length;
+    const persen = total > 0 ? Math.round((selesai / total) * 100) : 0;
+    const berjalan = total - selesai;
+
+    // 3. Update state tampilan
+    setStatistik({
+      totalTugas: total,
+      tugasSelesai: selesai,
+      tugasBerjalan: berjalan,
+      totalCatatan: dataJurnal.length,
+      totalFokus: dataFokus,
+      persentase: persen,
+    });
+  }, []);
+
+  // Data dummy untuk grafik visual agar tetap terlihat estetik
+  const dataGrafik = [
+    { h: "S", p: "40%" },
+    { h: "S", p: "70%" },
+    { h: "R", p: "50%" },
+    { h: "K", p: "90%" },
+    { h: "J", p: "30%" },
+    { h: "S", p: "60%" },
+    { h: "M", p: "45%" },
+  ];
+
+  return (
+    <section
+      id="dashboard"
+      className="py-20 md:py-32 px-4 sm:px-8 max-w-7xl mx-auto"
+    >
+      {/* HEADER: Pusat Kendali */}
+      <div className="reveal flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8 bg-white/40 p-8 rounded-[3rem] border border-white/60 shadow-sm">
+        <div className="flex items-center gap-6">
+          <div className="w-20 h-20 rounded-[2.5rem] bg-[#362A1F] flex items-center justify-center text-4xl shadow-2xl border-4 border-white transition-transform duration-500 hover:rotate-6">
+            📈
+          </div>
+          <div>
+            <h2 className="text-4xl md:text-5xl font-black text-[#362A1F] tracking-tighter uppercase">
+              Pusat Kendali
+            </h2>
+            <p className="text-sm font-medium text-[#8C7A6B] mt-1 tracking-widest uppercase opacity-60 italic">
+              Statistik Real-time Produktivitas
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+        {/* KARTU 1: TUGAS BERJALAN (REAL) */}
+        <div className="reveal cozy-card p-10 flex flex-col justify-between min-h-[320px] group border-l-[12px] border-l-[#362A1F]">
+          <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
+            Antrean Tugas
+          </p>
+          <div className="my-4">
+            <h4 className="text-9xl font-black text-[#362A1F] tracking-tighter">
+              {statistik.tugasBerjalan < 10
+                ? `0${statistik.tugasBerjalan}`
+                : statistik.tugasBerjalan}
+            </h4>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest">
+                Tugas Aktif
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* KARTU 2: DURASI FOKUS & PROGRES (REAL DARI POMODORO) */}
+        <div
+          className="reveal cozy-card p-10 border-b-[12px] border-[#F9A826] min-h-[320px] flex flex-col justify-between"
+          style={{ transitionDelay: "200ms" }}
+        >
+          <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
+            Total Fokus
+          </p>
+          <div>
+            <h4 className="text-8xl font-black text-[#362A1F] tracking-tighter">
+              {statistik.totalFokus}
+              <span className="text-2xl font-medium text-[#8C7A6B]">m</span>
+            </h4>
+            <div className="w-full bg-[#FAF6F0] h-4 rounded-full mt-6 p-1 border border-[#EAE0D5] shadow-inner">
+              <div
+                style={{ width: `${statistik.persentase}%` }}
+                className="bg-gradient-to-r from-[#F9A826] to-[#362A1F] h-full rounded-full shadow-lg transition-all duration-1000"
+              ></div>
+            </div>
+            <p className="text-[9px] font-bold text-[#6B5A46] uppercase mt-3 tracking-widest text-center">
+              {statistik.persentase}% Target Selesai
+            </p>
+          </div>
+        </div>
+
+        {/* KARTU 3: JURNAL & TREN (REAL DARI NOTES) */}
+        <div
+          className="reveal cozy-card p-10 bg-[#362A1F] text-white flex flex-col justify-between min-h-[320px] shadow-2xl shadow-[#362A1F]/40"
+          style={{ transitionDelay: "400ms" }}
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
+                Total Jurnal
+              </p>
+              <h5 className="text-xs font-bold text-[#F9A826] mt-1">
+                {statistik.totalCatatan} Catatan
+              </h5>
+            </div>
+            <span className="text-[9px] bg-white/10 px-3 py-1.5 rounded-xl border border-white/5 font-bold tracking-widest">
+              AKTIVITAS
+            </span>
+          </div>
+
+          {/* Grafik Visual */}
+          <div className="flex items-end justify-between h-32 gap-3 px-1">
+            {dataGrafik.map((item, index) => (
+              <div
+                key={index}
+                className="flex-1 flex flex-col items-center gap-3 h-full justify-end group cursor-pointer"
+              >
+                <div
+                  style={{ height: item.p }}
+                  className="w-full bg-[#F9A826] rounded-t-xl opacity-80 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_20px_rgba(249,168,38,0.3)]"
+                ></div>
+                <span className="text-[9px] text-white/30 font-bold group-hover:text-white transition-colors">
+                  {item.h}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

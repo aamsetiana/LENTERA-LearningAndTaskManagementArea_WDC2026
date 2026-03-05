@@ -1,39 +1,82 @@
+/* src/index.css */
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
 
 @layer base {
   body {
-    /* Background mewah dengan gradasi sangat lembut */
-    background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f1f5f9 100%);
-    @apply text-[#121212] antialiased;
-    font-family: "Inter", system-ui, sans-serif;
+    background-color: #faf6f0;
+    color: #362a1f;
+    font-family: "Poppins", sans-serif;
+    @apply antialiased;
   }
 }
 
-/* Kartu Bento Modern tanpa menggunakan cubic-bezier di dalam @apply */
-.bento-card {
-  @apply bg-white border border-slate-200/60 rounded-[2.5rem] p-10;
-  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+/* Background Hero Utama */
+.hero-bg {
+  background-image:
+    linear-gradient(rgba(248, 232, 213, 0.4), rgba(248, 232, 213, 1)),
+    url("./assets/bg-web.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100svh;
 }
 
-.bento-card:hover {
-  @apply shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] -translate-y-2;
+/* Gaya Kartu Premium */
+.cozy-card {
+  @apply bg-white border border-[#EAE0D5] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 ease-in-out;
 }
 
-/* Animasi Masuk yang Elegan */
+.cozy-card:hover {
+  @apply shadow-[0_20px_50px_rgba(139,115,85,0.15)] -translate-y-2 border-[#F9A826];
+}
+
+/* --- SISTEM ANIMASI PINDAH SECTION --- */
+
+/* State Awal: Sembunyi & Turun */
 .reveal {
   opacity: 0;
-  animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes revealUp {
+/* State Akhir: Muncul (Triggered by JS) */
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animasi Slide Up Standar */
+.animate-slide-up {
+  animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
-    filter: blur(10px);
+    transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
+}
+
+/* Custom Scrollbar agar lebih estetik */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #faf6f0;
+}
+::-webkit-scrollbar-thumb {
+  background: #eae0d5;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f9a826;
 }

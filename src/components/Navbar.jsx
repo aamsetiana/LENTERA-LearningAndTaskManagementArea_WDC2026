@@ -1,32 +1,102 @@
+import { useState } from "react";
+import { BookOpen, Menu, X } from "lucide-react";
+
 export default function Navbar() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const menu = [
+    { nama: "Beranda", link: "#" },
+    { nama: "Ringkasan", link: "#dashboard" },
+    { nama: "Meja Kerja", link: "#workstation" },
+    { nama: "Jurnal", link: "#catatan" },
+  ];
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-xl border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-10 h-20 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 bg-black rounded-xl flex items-center justify-center shadow-2xl">
-            <span className="text-white font-bold text-lg">L</span>
-          </div>
-          <span className="text-lg font-black tracking-tight uppercase">
-            Lentera
+    <nav className="fixed top-0 left-0 right-0 z-[100] px-3 py-3 sm:px-4 sm:py-4 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-2xl border border-white/50 px-4 sm:px-6 py-3 rounded-[1.5rem] sm:rounded-[2rem] shadow-xl">
+        {/* Logo */}
+        <div className="flex items-center gap-2 group cursor-pointer flex-shrink-0">
+          <BookOpen
+            size={28}
+            strokeWidth={2.5}
+            className="text-[#F9A826] group-hover:rotate-6 group-hover:scale-110 transition-all duration-500"
+          />
+          <span className="text-[20px] sm:text-[30px] font-black text-[#362A1F] tracking-tighter">
+            Lentera.
           </span>
         </div>
 
-        <div className="hidden md:flex gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
-          {["Beranda", "Tugas", "Fokus", "Catatan"].map((item) => (
+        {/* Desktop Menu */}
+        <div className="hidden lg:flex items-center gap-10">
+          {menu.map((item) => (
             <a
-              key={item}
-              href="#"
-              className="hover:text-black transition-colors"
+              key={item.nama}
+              href={item.link}
+              className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-[0.25em] hover:text-[#F9A826] transition-all relative group"
             >
-              {item}
+              {item.nama}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F9A826] transition-all group-hover:w-full"></span>
             </a>
           ))}
         </div>
 
-        <button className="bg-black text-white px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-xl">
-          Mulai Sekarang
-        </button>
+        {/* Desktop CTA Button */}
+        <a
+          href="#workstation"
+          className="hidden lg:block px-6 py-3 bg-[#F9A826] text-[#362A1F] rounded-2xl font-bold text-[10px] tracking-widest shadow-md active:scale-95 uppercase hover:bg-[#F9A826]/90 transition-all"
+        >
+          Fokus Sekarang
+        </a>
+
+        {/* Mobile Menu Button & CTA */}
+        <div className="lg:hidden flex items-center gap-3">
+          <button
+            onClick={toggleMobileMenu}
+            className="p-2 text-[#362A1F] hover:bg-[#F9A826]/20 rounded-lg transition-all"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X size={24} strokeWidth={2.5} />
+            ) : (
+              <Menu size={24} strokeWidth={2.5} />
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden mt-3 px-3 py-3 bg-white/70 backdrop-blur-2xl border border-white/50 rounded-2xl shadow-xl max-w-7xl mx-auto animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex flex-col gap-3 py-2">
+            {menu.map((item) => (
+              <a
+                key={item.nama}
+                href={item.link}
+                onClick={closeMobileMenu}
+                className="px-4 py-2.5 text-[11px] font-bold text-[#8C7A6B] uppercase tracking-[0.15em] hover:bg-[#F9A826]/20 hover:text-[#F9A826] rounded-lg transition-all"
+              >
+                {item.nama}
+              </a>
+            ))}
+
+            <a
+              href="#masuk"
+              onClick={closeMobileMenu}
+              className="px-4 py-2.5 bg-[#F9A826] text-[#362A1F] hover:bg-[#F9A826]/90   rounded-lg font-bold text-[11px] uppercase text-center transition-all"
+            >
+              Fokus Sekarang
+            </a>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
