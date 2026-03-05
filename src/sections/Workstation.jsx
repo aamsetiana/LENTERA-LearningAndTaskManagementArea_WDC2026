@@ -59,9 +59,12 @@ export default function Workstation({ notify }) {
     } else {
       clearInterval(interval);
     }
+    return () => clearInterval(interval);
+  }, [jalan, detik]);
 
-    if (detik === 0) {
-      clearInterval(interval);
+  // Separate effect for handling timer completion to avoid cascading renders
+  useEffect(() => {
+    if (detik === 0 && jalan) {
       setJalan(false);
       if (mode === "Fokus") {
         const totalFokus =
@@ -72,7 +75,7 @@ export default function Workstation({ notify }) {
           `Sesi Fokus ${inputMenit} menit selesai! Istirahat sekarang.`,
           "success",
         );
-        setShowFocusModal(true); // Tampilkan modal notifikasi
+        setShowFocusModal(true);
         setMode("Istirahat");
         setDetik(5 * 60);
       } else {
@@ -84,8 +87,7 @@ export default function Workstation({ notify }) {
         setDetik(inputMenit * 60);
       }
     }
-    return () => clearInterval(interval);
-  }, [jalan, detik, mode, inputMenit, notify]);
+  }, [detik, jalan, mode, inputMenit, notify]);
 
   const radius = 110;
   const keliling = 2 * Math.PI * radius;

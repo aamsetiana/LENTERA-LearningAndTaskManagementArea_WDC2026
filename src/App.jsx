@@ -8,7 +8,6 @@ import Dashboard from "./sections/Dashboard";
 import Analytics from "./sections/Analytics";
 import Workstation from "./sections/Workstation";
 import Notes from "./sections/Notes";
-import Analytics from "./sections/Analytics";
 import Footer from "./sections/Footer";
 import {
   useNotification,

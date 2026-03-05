@@ -106,6 +106,36 @@ export default function Analytics() {
     const persentase = total > 0 ? Math.round((selesai / total) * 100) : 0;
     const sesiPomodoro = Math.round(totalFokus / 25) || 0;
 
+    // 3. Hitung Performa Mingguan
+    const uniqueDays = new Set(
+      dataTugas.map((t) => new Date(t.id).toDateString()),
+    ).size;
+    const hariOnTrack = uniqueDays > 7 ? 7 : uniqueDays;
+    const rataRata = total > 0 ? (total / 7).toFixed(1) : 0;
+
+    // 4. Hitung data chart
+    // A. Bar Chart (Durasi Fokus Harian)
+    const today = new Date().getDay();
+    const dayIndex = today === 0 ? 6 : today - 1; // Senin = 0
+    const dailyFocus = [0, 0, 0, 0, 0, 0, 0];
+    dailyFocus[dayIndex] = parseFloat((totalFokus / 60).toFixed(1));
+
+    // B. Doughnut Chart (Status Tugas)
+    const statusCounts = { Rencana: 0, Dikerjakan: 0, Selesai: 0 };
+    dataTugas.forEach((t) => {
+      if (statusCounts[t.status] !== undefined) statusCounts[t.status]++;
+    });
+
+    // C. Line Chart (Aktivitas Mingguan)
+    const weeklyActivity = [0, 0, 0, 0, 0, 0, 0];
+    dataTugas.forEach((t) => {
+      const d = new Date(t.id);
+      const day = d.getDay();
+      const idx = day === 0 ? 6 : day - 1;
+      weeklyActivity[idx]++;
+    });
+
+    // Update all state at once to avoid cascading renders
     setStatistik({
       totalFokus: parseFloat((totalFokus / 60).toFixed(1)), // Konversi ke jam
       tugasSelesai: selesai,
@@ -114,26 +144,11 @@ export default function Analytics() {
       totalTugas: total,
     });
 
-    // 3. Hitung Performa Mingguan
-    const uniqueDays = new Set(
-      dataTugas.map((t) => new Date(t.id).toDateString()),
-    ).size;
-    const hariOnTrack = uniqueDays > 7 ? 7 : uniqueDays;
-    const rataRata = total > 0 ? (total / 7).toFixed(1) : 0;
-
     setPerforma({
       hariOnTrack: hariOnTrack,
       rataRata: rataRata,
       efisiensi: persentase,
     });
-
-    // --- UPDATE CHART DATA DENGAN WARNA EARTH TONE ---
-
-    // A. Bar Chart (Durasi Fokus Harian)
-    const today = new Date().getDay();
-    const dayIndex = today === 0 ? 6 : today - 1; // Senin = 0
-    const dailyFocus = [0, 0, 0, 0, 0, 0, 0];
-    dailyFocus[dayIndex] = parseFloat((totalFokus / 60).toFixed(1));
 
     setBarChartData({
       labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
@@ -146,12 +161,6 @@ export default function Analytics() {
           borderSkipped: false,
         },
       ],
-    });
-
-    // B. Doughnut Chart (Status Tugas)
-    const statusCounts = { Rencana: 0, Dikerjakan: 0, Selesai: 0 };
-    dataTugas.forEach((t) => {
-      if (statusCounts[t.status] !== undefined) statusCounts[t.status]++;
     });
 
     setDoughnutChartData({
@@ -168,15 +177,6 @@ export default function Analytics() {
           hoverOffset: 8,
         },
       ],
-    });
-
-    // C. Line Chart (Aktivitas Mingguan)
-    const weeklyActivity = [0, 0, 0, 0, 0, 0, 0];
-    dataTugas.forEach((t) => {
-      const d = new Date(t.id);
-      const day = d.getDay();
-      const idx = day === 0 ? 6 : day - 1;
-      weeklyActivity[idx]++;
     });
 
     setLineChartData({
