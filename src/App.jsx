@@ -5,12 +5,23 @@ import ProblemSection from "./sections/ProblemSection";
 import FeaturesGrid from "./sections/Features";
 import TechnologySection from "./sections/TechnologySection";
 import Dashboard from "./sections/Dashboard";
+import Analytics from "./sections/Analytics";
 import Workstation from "./sections/Workstation";
 import Notes from "./sections/Notes";
 import Analytics from "./sections/Analytics";
 import Footer from "./sections/Footer";
+import {
+  useNotification,
+  NotificationContainer,
+} from "./components/Notification";
 
 export default function App() {
+  const {
+    notifications,
+    notify,
+    remove: removeNotification,
+  } = useNotification();
+
   useEffect(() => {
     const handleReveal = () => {
       const reveals = document.querySelectorAll(".reveal");
@@ -26,7 +37,11 @@ export default function App() {
   }, []);
 
   return (
-    <div className="bg-gradient-to-b from-white via-orange-50/20 to-white">
+    <div className="bg-[#FAF6F0]">
+      <NotificationContainer
+        notifications={notifications}
+        onRemove={removeNotification}
+      />
       <Navbar />
       <Hero />
       <ProblemSection />
@@ -34,9 +49,9 @@ export default function App() {
       <TechnologySection />
       <main>
         <Dashboard />
-        <Workstation />
-        <Notes />
         <Analytics />
+        <Workstation notify={notify} />
+        <Notes notify={notify} />
       </main>
       <Footer />
     </div>

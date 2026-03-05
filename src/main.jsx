@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css"; // <--- Pastikan baris ini ada!
+import "./index.css";
+import { initializeMockData } from "./utils/mockData";
+
+// Initialize mock data when app starts
+initializeMockData();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    {" "}
     <App />
   </React.StrictMode>,
 );
