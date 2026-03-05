@@ -11,7 +11,7 @@ import { X } from "lucide-react";
  * - onClose: function
  */
 
-export function ModalInput({ isOpen, title, fields, onSubmit, onClose }) {
+export function ModalInput({ isOpen, title, fields, onSubmit, onClose, notify }) {
   const [formData, setFormData] = useState({});
 
   const handleChange = (fieldName, value) => {
@@ -27,7 +27,11 @@ export function ModalInput({ isOpen, title, fields, onSubmit, onClose }) {
     );
 
     if (!allFilled) {
-      alert("Mohon isi semua field yang diperlukan");
+      if (notify) {
+        notify("Mohon isi semua field yang diperlukan", "error");
+      } else {
+        alert("Mohon isi semua field yang diperlukan");
+      }
       return;
     }
 

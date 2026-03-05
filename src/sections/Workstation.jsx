@@ -165,6 +165,7 @@ export default function Workstation({ notify }) {
       {/* Modal Add Task */}
       <ModalInput
         isOpen={modalAddTask.isOpen}
+        notify={notify}
         title="Tambah Tugas Baru"
         fields={[
           {
@@ -290,11 +291,10 @@ export default function Workstation({ notify }) {
             <div className="grid grid-cols-2 gap-4 w-full">
               <button
                 onClick={() => setJalan(!jalan)}
-                className={`py-4 rounded-4xl font-black text-[10px] tracking-widest uppercase shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 ${
-                  jalan
+                className={`py-4 rounded-4xl font-black text-[10px] tracking-widest uppercase shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 ${jalan
                     ? "bg-[#362A1F] text-white border-2 border-[#362A1F]"
                     : "bg-[#F9A826] text-[#362A1F] border-2 border-[#F9A826]"
-                }`}
+                  }`}
               >
                 {jalan ? (
                   <>
@@ -328,11 +328,10 @@ export default function Workstation({ notify }) {
                     key={s.id}
                     onClick={() => toggleAudio(s)}
                     title={s.label}
-                    className={`w-full py-3 rounded-xl flex flex-col items-center justify-center transition-all border-2 font-black text-[10px] ${
-                      playing === s.id
+                    className={`w-full py-3 rounded-xl flex flex-col items-center justify-center transition-all border-2 font-black text-[10px] ${playing === s.id
                         ? "bg-[#362A1F] text-white border-[#362A1F]"
                         : "bg-white border-[#EAE0D5] text-[#8C7A6B] hover:border-[#F9A826]"
-                    }`}
+                      }`}
                   >
                     <span className="text-lg">{s.icon}</span>
                     <span className="text-[8px] mt-1">{s.label}</span>
@@ -391,11 +390,10 @@ export default function Workstation({ notify }) {
                       return (
                         <div
                           key={t.id}
-                          className={`bg-white p-4 rounded-3xl shadow-sm border-2 transition-all group flex flex-col ${
-                            isUrgent
+                          className={`bg-white p-4 rounded-3xl shadow-sm border-2 transition-all group flex flex-col ${isUrgent
                               ? "border-red-300 bg-red-50/30 hover:border-red-500"
                               : "border-[#EAE0D5] hover:border-[#F9A826]"
-                          }`}
+                            }`}
                         >
                           {/* Deadline Warning */}
                           {isUrgent && (
