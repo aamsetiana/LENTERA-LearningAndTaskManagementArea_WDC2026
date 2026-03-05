@@ -16,7 +16,7 @@
 }
 
 .bento-card:hover {
-  @apply shadow-[0_40px_80px_-15px_rgba(0, 0, 0, 0.08)] -translate-y-2;
+  @apply shadow-[0_40px_80px_-15px_rgba(0_0_0_/_0.08)] -translate-y-2;
 }
 
 /* Animasi Fade In */
