@@ -31,7 +31,9 @@ export const useNotification = () => {
 
 export function NotificationContainer({ notifications, onRemove }) {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 pointer-events-none">
+    // DI SINI KUNCINYA: top-28 bikin posisinya turun aman di bawah Navbar,
+    // left-1/2 dan -translate-x-1/2 bikin dia pas presisi di tengah layar horizontal.
+    <div className="fixed top-28 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-3 w-full max-w-md px-4 pointer-events-none">
       {notifications.map((notif) => (
         <Toast
           key={notif.id}
@@ -66,9 +68,9 @@ function Toast({ notification, onClose }) {
       icon: <AlertCircle className="h-5 w-5" />,
     },
     info: {
-      bg: "bg-blue-500",
-      border: "border-blue-600",
-      icon: <Info className="h-5 w-5" />,
+      bg: "bg-[#362A1F]",
+      border: "border-[#1A140F]",
+      icon: <Info className="h-5 w-5 text-[#F9A826]" />,
     },
   };
 
@@ -76,15 +78,17 @@ function Toast({ notification, onClose }) {
 
   return (
     <div
-      className={`${style.bg} ${style.border} border-2 text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 animate-slideInRight pointer-events-auto max-w-md`}
+      className={`${style.bg} ${style.border} border-2 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 animate-[fadeScale_0.3s_ease-out] pointer-events-auto w-full`}
     >
       <div className="flex-shrink-0">{style.icon}</div>
-      <p className="flex-1 font-medium">{notification.message}</p>
+      <p className="flex-1 font-bold text-sm tracking-wide">
+        {notification.message}
+      </p>
       <button
         onClick={onClose}
-        className="flex-shrink-0 hover:opacity-75 transition-opacity"
+        className="flex-shrink-0 hover:opacity-75 transition-opacity bg-white/10 p-1.5 rounded-full"
       >
-        <X className="h-5 w-5" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );

@@ -47,38 +47,38 @@ export default function Dashboard() {
   return (
     <section
       id="dashboard"
-      className="py-20 md:py-32 px-4 sm:px-8 max-w-7xl mx-auto"
+      className="pt-0 pb-24 md:pt-0 md:pb-48 px-4 sm:px-8 max-w-7xl mx-auto -mt-12 md:-mt-24 relative z-10"
     >
       {/* HEADER: Pusat Kendali */}
-      <div className="reveal flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8 bg-white/40 p-8 rounded-[3rem] border border-white/60 shadow-sm">
+      <div className="reveal flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 md:gap-8 bg-white/40 p-6 md:p-8 rounded-[3rem] border border-white/60 shadow-sm">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-[2.5rem] bg-[#2D1810] flex items-center justify-center text-4xl shadow-2xl border-4 border-white transition-transform duration-500 hover:rotate-6">
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2.5rem] bg-[#2D1810] flex items-center justify-center text-3xl md:text-4xl shadow-2xl border-4 border-white transition-transform duration-500 hover:rotate-6">
             📈
           </div>
           <div>
-            <h2 className="text-4xl md:text-5xl font-black text-[#2D1810] tracking-tighter uppercase">
+            <h2 className="text-3xl md:text-5xl font-black text-[#2D1810] tracking-tighter uppercase">
               Pusat Kendali
             </h2>
-            <p className="text-sm font-medium text-[#8C7A6B] mt-1 tracking-widest uppercase opacity-60 italic">
+            <p className="text-xs md:text-sm font-medium text-[#8C7A6B] mt-1 tracking-widest uppercase opacity-60 italic">
               Statistik Real-time Produktivitas
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
         {/* KARTU 1: TUGAS BERJALAN (REAL) */}
-        <div className="reveal cozy-card p-10 flex flex-col justify-between min-h-[320px] group border-l-[12px] border-l-[#2D1810]">
+        <div className="reveal cozy-card p-8 md:p-10 flex flex-col justify-between min-h-[320px] group border-l-[12px] border-l-[#2D1810]">
           <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
             Antrean Tugas
           </p>
-          <div className="my-4">
-            <h4 className="text-9xl font-black text-[#2D1810] tracking-tighter">
+          <div className="my-4 text-center md:text-left">
+            <h4 className="text-8xl md:text-9xl font-black text-[#2D1810] tracking-tighter">
               {statistik.tugasBerjalan < 10
                 ? `0${statistik.tugasBerjalan}`
                 : statistik.tugasBerjalan}
             </h4>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
               <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest">
                 Tugas Aktif
@@ -89,14 +89,14 @@ export default function Dashboard() {
 
         {/* KARTU 2: DURASI FOKUS & PROGRES (REAL DARI POMODORO) */}
         <div
-          className="reveal cozy-card p-10 border-b-[12px] border-[#D97757] min-h-[320px] flex flex-col justify-between"
+          className="reveal cozy-card p-8 md:p-10 border-b-[12px] border-[#D97757] min-h-[320px] flex flex-col justify-between"
           style={{ transitionDelay: "200ms" }}
         >
           <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
             Total Fokus
           </p>
-          <div>
-            <h4 className="text-8xl font-black text-[#2D1810] tracking-tighter">
+          <div className="text-center md:text-left">
+            <h4 className="text-7xl md:text-8xl font-black text-[#2D1810] tracking-tighter">
               {statistik.totalFokus}
               <span className="text-2xl font-medium text-[#8C7A6B]">m</span>
             </h4>
@@ -114,7 +114,7 @@ export default function Dashboard() {
 
         {/* KARTU 3: JURNAL & TREN (REAL DARI NOTES) */}
         <div
-          className="reveal cozy-card p-10 bg-[#2D1810] text-white flex flex-col justify-between min-h-[320px] shadow-2xl shadow-[#2D1810]/40"
+          className="reveal cozy-card p-8 md:p-10 bg-[#2D1810] text-white flex flex-col justify-between min-h-[320px] shadow-2xl shadow-[#2D1810]/40"
           style={{ transitionDelay: "400ms" }}
         >
           <div className="flex justify-between items-start">
@@ -132,7 +132,7 @@ export default function Dashboard() {
           </div>
 
           {/* Grafik Visual */}
-          <div className="flex items-end justify-between h-32 gap-3 px-1">
+          <div className="flex items-end justify-between h-32 gap-2 md:gap-3 px-1">
             {dataGrafik.map((item, index) => (
               <div
                 key={index}
