@@ -1,86 +1,60 @@
+/* src/index.css */
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
 
 @layer base {
   body {
-    /* Background warm dengan gradasi lembut */
-    background: linear-gradient(135deg, #ffffff 0%, #FFF4ED 50%, #FFE8DC 100%);
-    @apply text-[#2D1810] antialiased;
-    font-family: "Inter", system-ui, sans-serif;
+    background-color: #faf6f0;
+    color: #362a1f;
+    font-family: "Poppins", sans-serif;
+    @apply antialiased;
   }
 }
 
-/* Kartu Bento Modern */
-.bento-card {
-  @apply bg-white border border-slate-200/60 rounded-[2.5rem] p-10;
-  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+/* Background Hero Utama */
+.hero-bg {
+  background-image:
+    linear-gradient(rgba(248, 232, 213, 0.4), rgba(248, 232, 213, 1)),
+    url("./assets/bg-web.jpg");
+  background-size: cover;
+  background-position: center;
+  min-height: 100svh;
 }
 
-.bento-card:hover {
-  @apply shadow-[0_40px_80px_-15px_rgba(0_0_0_/_0.08)] -translate-y-2;
+/* Gaya Kartu Premium */
+.cozy-card {
+  @apply bg-white border border-[#EAE0D5] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 ease-in-out;
 }
 
-/* Animasi Fade In */
-.fade-in {
-  animation: fadeIn 0.8s ease-in forwards;
+.cozy-card:hover {
+  @apply shadow-[0_20px_50px_rgba(139,115,85,0.15)] -translate-y-2 border-[#F9A826];
 }
 
-/* Animasi Fade In Up */
-.fade-in-up {
+/* --- SISTEM ANIMASI PINDAH SECTION --- */
+
+/* State Awal: Sembunyi & Turun */
+.reveal {
   opacity: 0;
-  animation: fadeInUp 0.8s ease-out forwards;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Animasi Fade In Down */
-.fade-in-down {
-  opacity: 0;
-  animation: fadeInDown 0.6s ease-out forwards;
+/* State Akhir: Muncul (Triggered by JS) */
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Animasi Slide In Left */
-.slide-in-left {
-  opacity: 0;
-  animation: slideInLeft 0.8s ease-out forwards;
+/* Animasi Slide Up Standar */
+.animate-slide-up {
+  animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Animasi Slide In Right */
-.slide-in-right {
-  opacity: 0;
-  animation: slideInRight 0.8s ease-out forwards;
-}
-
-/* Delay untuk stagger effect */
-.delay-100 {
-  animation-delay: 0.1s;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
-}
-
-.delay-300 {
-  animation-delay: 0.3s;
-}
-
-.delay-400 {
-  animation-delay: 0.4s;
-}
-
-.delay-500 {
-  animation-delay: 0.5s;
-}
-
-/* Keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
+@keyframes slideUp {
   from {
     opacity: 0;
     transform: translateY(30px);
@@ -92,63 +66,17 @@
   }
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Custom Scrollbar agar lebih estetik */
+::-webkit-scrollbar {
+  width: 8px;
 }
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+::-webkit-scrollbar-track {
+  background: #faf6f0;
 }
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+::-webkit-scrollbar-thumb {
+  background: #eae0d5;
+  border-radius: 10px;
 }
-
-/* Animasi Masuk yang Elegan */
-.reveal {
-  opacity: 0;
-  animation: revealUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes revealUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-    filter: blur(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* Smooth transitions untuk semua elemen */
-* {
-  @apply transition-all duration-300;
+::-webkit-scrollbar-thumb:hover {
+  background: #f9a826;
 }

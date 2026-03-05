@@ -1,19 +1,34 @@
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./sections/Hero";
-import ProblemSection from "./sections/ProblemSection";
-import FeaturesGrid from "./sections/Features";
-import TechnologySection from "./sections/TechnologySection";
+import Dashboard from "./sections/Dashboard";
+import Workstation from "./sections/Workstation";
+import Notes from "./sections/Notes";
 import Footer from "./sections/Footer";
 
 export default function App() {
+  useEffect(() => {
+    const handleReveal = () => {
+      const reveals = document.querySelectorAll(".reveal");
+      reveals.forEach((el) => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+        if (elementTop < windowHeight - 150) el.classList.add("active");
+      });
+    };
+    window.addEventListener("scroll", handleReveal);
+    handleReveal();
+    return () => window.removeEventListener("scroll", handleReveal);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-orange-50/20 to-white font-sans text-slate-900 selection:bg-orange-200 selection:text-orange-900">
+    <div className="bg-[#FAF6F0]">
       <Navbar />
+      <Hero />
       <main>
-        <Hero />
-        <ProblemSection />
-        <FeaturesGrid />
-        <TechnologySection />
+        <Dashboard />
+        <Workstation />
+        <Notes />
       </main>
       <Footer />
     </div>

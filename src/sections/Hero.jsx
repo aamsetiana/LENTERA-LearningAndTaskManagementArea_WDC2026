@@ -1,74 +1,27 @@
-import { ChevronRight, Check } from 'lucide-react';
-
+// src/sections/Hero.jsx
 export default function Hero() {
   return (
-    <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] opacity-20 pointer-events-none fade-in">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-500 blur-[100px] rounded-full mix-blend-multiply"></div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Hero Copy */}
-          <div className="text-left fade-in-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50/80 border border-orange-100 text-orange-600 text-xs font-semibold mb-6 backdrop-blur-sm fade-in-up delay-100">
-              ⚡ Solusi Produktivitas Mahasiswa
-            </div>
-            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight mb-6 text-slate-900 leading-[1.1] fade-in-up delay-200">
-              Fokus Belajar, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">
-                Tanpa Distraksi.
-              </span>
-            </h1>
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg fade-in-up delay-300">
-              LENTERA adalah ruang kerja digital minimalis yang membantu Anda menyusun prioritas, melacak progres tugas, dan menjaga keseimbangan antara akademik & organisasi.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 fade-in-up delay-400">
-              <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-7 py-3.5 rounded-2xl font-semibold transition-all shadow-xl shadow-orange-500/20 group">
-                Mulai Atur Jadwal <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-
-          {/* Hero Visual / Mockup Dashboard */}
-          <div className="relative slide-in-right delay-300">
-            <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 to-orange-500 rounded-3xl blur opacity-20"></div>
-            <div className="relative bg-white/60 backdrop-blur-xl border border-white/40 rounded-3xl shadow-2xl p-6">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h3 className="font-bold text-slate-800">Tugas Hari Ini</h3>
-                  <p className="text-xs text-slate-500">3 tersisa, Tetap semangat!</p>
-                </div>
-                <div className="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">
-                  R
-                </div>
-              </div>
-
-              {/* Dummy Data Items */}
-              <div className="space-y-3">
-                {[
-                  { title: "Laporan Proyek IoT Smart Home", time: "14:00 WIB", tag: "Akademik", urgent: true },
-                  { title: "Praktikum Sistem Operasi", time: "16:30 WIB", tag: "Akademik", urgent: false },
-                  { title: "Rapat Divisi Himpunan", time: "19:00 WIB", tag: "Organisasi", urgent: false },
-                ].map((task, i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-orange-200 transition-colors cursor-default fade-in-up delay-300">
-                    <div className={`w-2 h-10 rounded-full ${task.urgent ? 'bg-rose-500' : 'bg-orange-400'}`}></div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-slate-800">{task.title}</h4>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{task.time}</span>
-                        <span className="text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">{task.tag}</span>
-                      </div>
-                    </div>
-                    <button className="h-6 w-6 rounded-full border border-slate-200 flex items-center justify-center hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-500 transition-colors">
-                      <Check className="h-3 w-3 opacity-0 hover:opacity-100" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+    <section className="hero-bg flex flex-col items-center justify-center text-center px-6">
+      <div className="max-w-4xl space-y-6 animate-slide-up">
+        {/* <span className="bg-white/20 backdrop-blur-md px-6 py-2 rounded-full text-[10px] font-bold text-[#362A1F] uppercase tracking-[0.4em] border border-white/30 shadow-sm">
+          Digital Sanctuary for Students
+        </span> */}
+        <h1 className="text-5xl md:text-8xl font-black text-[#362A1F] leading-tight tracking-tighter">
+          Nyalakan <span className="text-white drop-shadow-md">Fokus,</span>
+          <br />
+          Selesaikan <span className="text-[#F9A826]">Tugas.</span>
+        </h1>
+        <p className="text-lg md:text-xl text-[#362A1F]/70 font-medium max-w-2xl mx-auto">
+          Ruang kerja minimalis untuk manajemen waktu dan produktivitas
+          mahasiswa yang lebih terukur.
+        </p>
+        <div className="pt-10 flex flex-col sm:flex-row gap-5 justify-center">
+          <a
+            href="#dashboard"
+            className="px-12 py-5 bg-[#362A1F] text-white rounded-[2rem] font-bold text-sm shadow-2xl hover:bg-[#F9A826] hover:text-[#362A1F] transition-all duration-500 uppercase tracking-widest active:scale-95"
+          >
+            Mulai Produktif
+          </a>
         </div>
       </div>
     </section>

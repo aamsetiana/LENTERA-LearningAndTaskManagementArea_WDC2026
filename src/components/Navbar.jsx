@@ -1,31 +1,42 @@
 import { BookOpen } from 'lucide-react';
 
 export default function Navbar() {
+  const menu = [
+    { nama: "Beranda", link: "#" },
+    { nama: "Ringkasan", link: "#dashboard" },
+    { nama: "Meja Kerja", link: "#workstation" },
+    { nama: "Jurnal", link: "#catatan" },
+  ];
+
   return (
-    <nav className="fixed w-full bg-white/70 backdrop-blur-xl z-50 border-b border-orange-100/50 fade-in">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-2 group cursor-pointer fade-in-left">
-            <div className="bg-orange-500 p-2 rounded-xl group-hover:bg-orange-600 transition-colors">
-              <BookOpen className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-orange-600">
-              LENTERA
-            </span>
-          </div>
-          <div className="hidden md:flex space-x-8">
-            <a href="#latar-belakang" className="text-sm text-slate-600 hover:text-orange-500 font-medium transition-colors fade-in-up delay-100">Latar Belakang</a>
-            <a href="#fitur" className="text-sm text-slate-600 hover:text-orange-500 font-medium transition-colors fade-in-up delay-200">Fitur Utama</a>
-            <a href="#cara-kerja" className="text-sm text-slate-600 hover:text-orange-500 font-medium transition-colors fade-in-up delay-300">Cara Kerja</a>
-            <a href="#teknologi" className="text-sm text-slate-600 hover:text-orange-500 font-medium transition-colors fade-in-up delay-400">Teknologi</a>
-          </div>
-          <div className="flex items-center gap-3 fade-in-right">
-            <button className="hidden md:block text-sm font-semibold text-slate-600 hover:text-orange-500 transition-colors">Masuk</button>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-5 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-orange-400/30">
-              Coba Gratis
-            </button>
-          </div>
+    <nav className="fixed top-0 left-0 right-0 z-[100] px-4 py-4 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 backdrop-blur-2xl border border-white/50 px-6 py-3 rounded-[2rem] shadow-xl">
+        <div className="flex items-center gap-2 group cursor-pointer">
+          <span className="text-2xl group-hover:scale-125 transition-transform duration-500">
+            🏮
+          </span>
+          <span className="text-xl font-black text-[#362A1F] tracking-tighter">
+            Lentera.
+          </span>
         </div>
+        <div className="hidden md:flex items-center gap-10">
+          {menu.map((item) => (
+            <a
+              key={item.nama}
+              href={item.link}
+              className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-[0.25em] hover:text-[#F9A826] transition-all relative group"
+            >
+              {item.nama}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F9A826] transition-all group-hover:w-full"></span>
+            </a>
+          ))}
+        </div>
+        <a
+          href="#workstation"
+          className="px-6 py-2.5 bg-[#F9A826] text-[#362A1F] rounded-2xl font-bold text-[10px] tracking-widest shadow-md active:scale-95 uppercase"
+        >
+          Fokus Sekarang
+        </a>
       </div>
     </nav>
   );
