@@ -1,4 +1,4 @@
-import { BarChart3, PieChart, TrendingUp, Clock, CheckCircle2, Zap } from 'lucide-react';
+import { BarChart3, PieChart, TrendingUp, Clock, CheckCircle2, Zap, Target } from 'lucide-react';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -184,7 +184,7 @@ export default function Analytics() {
         </div>
 
         {/* Stat Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
           <div className="delay-100">
             <StatCard
               icon={Clock}
@@ -210,6 +210,15 @@ export default function Analytics() {
               value="38"
               unit="sesi"
               color="bg-amber-500"
+            />
+          </div>
+          <div className="delay-400">
+            <StatCard
+              icon={Target}
+              label="Target Tercapai"
+              value="87"
+              unit="%"
+              color="bg-rose-500"
             />
           </div>
         </div>
@@ -239,7 +248,7 @@ export default function Analytics() {
           </div>
 
           {/* Line Chart */}
-          <div className="md:col-span-2 bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-300">
+          <div className="bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-300">
             <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="h-5 w-5 text-orange-600" />
               <h3 className="text-lg font-bold text-slate-900">📅 Tren Tugas Mingguan</h3>
@@ -248,10 +257,32 @@ export default function Analytics() {
               <Line data={lineChartData} options={lineChartOptions} />
             </div>
           </div>
+
+          {/* Performance Summary */}
+          <div className="bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-400">
+            <div className="flex items-center gap-2 mb-6">
+              <CheckCircle2 className="h-5 w-5 text-orange-600" />
+              <h3 className="text-lg font-bold text-slate-900">✅ Performa Mingguan</h3>
+            </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-orange-50 rounded-xl">
+                <span className="text-sm font-medium text-slate-700">Hari On Track</span>
+                <span className="text-xl font-bold text-orange-600">5/7</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-xl">
+                <span className="text-sm font-medium text-slate-700">Rata-rata Tugas/Hari</span>
+                <span className="text-xl font-bold text-emerald-600">2.0</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl">
+                <span className="text-sm font-medium text-slate-700">Efisiensi Belajar</span>
+                <span className="text-xl font-bold text-amber-600">92%</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Footer Tip */}
-        <div className="mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-400">
+        <div className="mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
           <p className="text-slate-700 text-sm">
             <span className="font-semibold">💡 Tips:</span> Pantau grafik ini setiap minggu untuk melihat pola pembelajaran Anda. Tingkatkan target fokus sebesar 10% setiap minggu untuk hasil optimal!
           </p>

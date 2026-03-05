@@ -27,11 +27,11 @@ html {
 
 /* Gaya Kartu Premium */
 .cozy-card {
-  @apply bg-white border border-[#EAE0D5] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 ease-in-out;
+  @apply bg-white border border-[#EAE0D5] rounded-[2.5rem] shadow-[0_8px_30px_rgb(0_0_0_/_0.04)] transition-all duration-500 ease-in-out;
 }
 
 .cozy-card:hover {
-  @apply shadow-[0_20px_50px_rgba(139,115,85,0.15)] -translate-y-2 border-[#F9A826];
+  @apply shadow-[0_20px_50px_rgba(139_115_85_/_0.15)] -translate-y-2 border-[#F9A826];
 }
 
 /* --- SISTEM ANIMASI PINDAH SECTION --- */
@@ -70,13 +70,16 @@ html {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #faf6f0;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #eae0d5;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #f9a826;
 }
