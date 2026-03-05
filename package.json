@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.1",
+    "chart.js": "^4.5.1",
     "lucide-react": "^0.395.0",
     "react": "^19.2.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {

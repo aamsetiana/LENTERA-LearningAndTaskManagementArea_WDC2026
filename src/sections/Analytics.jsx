@@ -1,80 +1,260 @@
-// src/sections/Analytics.jsx
+import { BarChart3, PieChart, TrendingUp, Clock, CheckCircle2, Zap } from 'lucide-react';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
+
+const StatCard = ({ icon: Icon, label, value, unit, color }) => (
+  <div className="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-8 border border-orange-100 hover:shadow-lg transition-all fade-in-up">
+    <div className="flex items-start gap-4">
+      <div className={`p-3 rounded-2xl ${color}`}>
+        <Icon className="h-6 w-6 text-white" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm text-slate-600 mb-1">{label}</p>
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-bold text-slate-900">{value}</span>
+          {unit && <span className="text-sm text-slate-500">{unit}</span>}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Analytics() {
-  const hari = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
-  // Simulasi tinggi bar chart (dalam class Tailwind)
-  const tinggiGrafik = ["h-12", "h-24", "h-16", "h-32", "h-20", "h-8", "h-10"];
+  // Data untuk Bar Chart - Durasi Fokus Harian
+  const barChartData = {
+    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    datasets: [
+      {
+        label: 'Jam Fokus',
+        data: [2.5, 3.0, 1.5, 2.8, 4.0, 2.2, 1.0],
+        backgroundColor: [
+          'rgba(255, 139, 61, 0.8)',
+          'rgba(255, 139, 61, 0.8)',
+          'rgba(255, 139, 61, 0.8)',
+          'rgba(255, 139, 61, 0.8)',
+          'rgba(255, 165, 87, 0.9)',
+          'rgba(255, 139, 61, 0.8)',
+          'rgba(255, 139, 61, 0.8)',
+        ],
+        borderRadius: 8,
+        borderSkipped: false,
+      },
+    ],
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        ticks: { color: '#64748b', font: { size: 12 } },
+      },
+      y: {
+        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        ticks: { color: '#64748b', font: { size: 12 } },
+        beginAtZero: true,
+      },
+    },
+  };
+
+  // Data untuk Doughnut Chart - Distribusi Waktu Belajar
+  const doughnutChartData = {
+    labels: ['Basis Data', 'Algoritma', 'Jaringan', 'Matematika', 'Lainnya'],
+    datasets: [
+      {
+        data: [35, 25, 20, 12, 8],
+        backgroundColor: [
+          '#FF8B3D',
+          '#FFA557',
+          '#FFB968',
+          '#FFC97A',
+          '#FFD98C',
+        ],
+        borderWidth: 0,
+        hoverOffset: 8,
+      },
+    ],
+  };
+
+  const doughnutChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    cutout: '70%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#64748b',
+          padding: 15,
+          boxWidth: 12,
+          font: { size: 12 },
+        },
+      },
+    },
+  };
+
+  // Data untuk Line Chart - Tren Tugas Mingguan
+  const lineChartData = {
+    labels: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
+    datasets: [
+      {
+        label: 'Tugas Selesai',
+        data: [2, 4, 2, 5, 7, 3, 1],
+        borderColor: '#FF8B3D',
+        backgroundColor: 'rgba(255, 139, 61, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#FF8B3D',
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      },
+      {
+        label: 'Target',
+        data: [4, 4, 4, 4, 4, 4, 4],
+        borderColor: 'rgba(255, 139, 61, 0.3)',
+        borderDash: [5, 5],
+        pointRadius: 0,
+        fill: false,
+      },
+    ],
+  };
+
+  const lineChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: { color: '#64748b', font: { size: 12 } },
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        ticks: { color: '#64748b', font: { size: 12 } },
+      },
+      y: {
+        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        ticks: { color: '#64748b', font: { size: 12 } },
+        beginAtZero: true,
+      },
+    },
+  };
 
   return (
-    <section id="statistik" className="py-24 px-6 max-w-6xl mx-auto">
-      <div className="mb-12 animate-fade-up">
-        <h2 className="text-4xl font-bold text-[#4A3F35]">Rekap Minggu Ini</h2>
-        <p className="text-[#8C7A6B] mt-2 text-lg">
-          Pantau konsistensi belajarmu. Sedikit demi sedikit, lama-lama menjadi
-          bukit.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-up delay-100">
-        {/* GRAFIK WAKTU FOKUS (2 Kolom) */}
-        <div className="md:col-span-2 cozy-card p-8 flex flex-col justify-between min-h-[320px]">
-          <div className="flex justify-between items-center mb-10">
-            <h3 className="font-bold text-[#4A3F35] text-lg">
-              Durasi Fokus (Jam)
-            </h3>
-            <span className="px-4 py-1.5 bg-[#F3EAD3] text-[#D97757] rounded-lg text-xs font-bold uppercase tracking-wider">
-              7 Hari Terakhir
-            </span>
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white via-orange-50/20 to-white">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-12 fade-in-up">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-orange-100 rounded-xl">
+              <TrendingUp className="h-6 w-6 text-orange-600" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
+              📊 Visualisasi Progres
+            </h2>
           </div>
+          <p className="text-slate-600">Pantau produktivitasmu dan tingkat pembelajaran minggu ini</p>
+        </div>
 
-          {/* Bar Chart Estetik */}
-          <div className="flex items-end justify-between flex-1 gap-2 border-b border-[#EAE0D5] pb-2">
-            {hari.map((h, i) => (
-              <div key={h} className="flex flex-col items-center gap-4 w-full">
-                {/* Batang Grafik */}
-                <div
-                  className={`w-full max-w-[40px] bg-[#EAE0D5] rounded-t-xl relative group transition-all duration-300 hover:bg-[#D97757] ${tinggiGrafik[i]}`}
-                >
-                  {/* Tooltip Muncul Saat Hover */}
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[#4A3F35] text-white text-xs font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {parseInt(tinggiGrafik[i].replace("h-", "")) / 4} Jam
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-[#8C7A6B]">{h}</span>
-              </div>
-            ))}
+        {/* Stat Cards */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="delay-100">
+            <StatCard
+              icon={Clock}
+              label="Total Fokus Minggu Ini"
+              value="18"
+              unit="jam"
+              color="bg-orange-500"
+            />
+          </div>
+          <div className="delay-200">
+            <StatCard
+              icon={CheckCircle2}
+              label="Tugas Diselesaikan"
+              value="14"
+              unit="tugas"
+              color="bg-emerald-500"
+            />
+          </div>
+          <div className="delay-300">
+            <StatCard
+              icon={Zap}
+              label="Sesi Pomodoro"
+              value="38"
+              unit="sesi"
+              color="bg-amber-500"
+            />
           </div>
         </div>
 
-        {/* RINGKASAN PENCAPAIAN (1 Kolom) */}
-        <div className="cozy-card p-8 flex flex-col justify-between min-h-[320px] bg-[#FAF6F0]/50 border-dashed border-2">
-          <h3 className="font-bold text-[#4A3F35] text-lg mb-6">Pencapaian</h3>
-
-          <div className="space-y-8 flex-1 justify-center flex flex-col">
-            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 rounded-2xl bg-[#F3EAD3] text-[#D97757] flex items-center justify-center text-2xl shadow-sm">
-                🔥
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-[#4A3F35]">14 Jam</p>
-                <p className="text-xs text-[#8C7A6B] font-bold uppercase tracking-widest mt-1">
-                  Total Deep Work
-                </p>
-              </div>
+        {/* Charts Grid */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Bar Chart */}
+          <div className="bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-150">
+            <div className="flex items-center gap-2 mb-6">
+              <BarChart3 className="h-5 w-5 text-orange-600" />
+              <h3 className="text-lg font-bold text-slate-900">📈 Durasi Fokus Harian (Jam)</h3>
             </div>
-
-            <div className="flex items-center gap-5">
-              <div className="w-14 h-14 rounded-2xl bg-white border border-[#EAE0D5] text-[#8C7A6B] flex items-center justify-center text-2xl shadow-sm">
-                ✅
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-[#4A3F35]">8 Tugas</p>
-                <p className="text-xs text-[#8C7A6B] font-bold uppercase tracking-widest mt-1">
-                  Telah Diselesaikan
-                </p>
-              </div>
+            <div className="h-[280px]">
+              <Bar data={barChartData} options={barChartOptions} />
             </div>
           </div>
+
+          {/* Doughnut Chart */}
+          <div className="bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-200">
+            <div className="flex items-center gap-2 mb-6">
+              <PieChart className="h-5 w-5 text-orange-600" />
+              <h3 className="text-lg font-bold text-slate-900">🍩 Distribusi Waktu Belajar</h3>
+            </div>
+            <div className="h-[280px] flex items-center justify-center">
+              <Doughnut data={doughnutChartData} options={doughnutChartOptions} />
+            </div>
+          </div>
+
+          {/* Line Chart */}
+          <div className="md:col-span-2 bg-white rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-300">
+            <div className="flex items-center gap-2 mb-6">
+              <TrendingUp className="h-5 w-5 text-orange-600" />
+              <h3 className="text-lg font-bold text-slate-900">📅 Tren Tugas Mingguan</h3>
+            </div>
+            <div className="h-[200px]">
+              <Line data={lineChartData} options={lineChartOptions} />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Tip */}
+        <div className="mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-400">
+          <p className="text-slate-700 text-sm">
+            <span className="font-semibold">💡 Tips:</span> Pantau grafik ini setiap minggu untuk melihat pola pembelajaran Anda. Tingkatkan target fokus sebesar 10% setiap minggu untuk hasil optimal!
+          </p>
         </div>
       </div>
     </section>
