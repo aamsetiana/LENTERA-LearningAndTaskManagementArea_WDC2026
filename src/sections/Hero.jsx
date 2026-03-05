@@ -2,7 +2,7 @@
 export default function Hero() {
   return (
     <section className="hero-bg flex flex-col items-center justify-center text-center px-6">
-      <div className="max-w-4xl space-y-6 animate-slide-up">
+      <div className="max-w-4xl space-y-6 animate-slide-up py-28">
         {/* <span className="bg-white/20 backdrop-blur-md px-6 py-2 rounded-full text-[10px] font-bold text-[#362A1F] uppercase tracking-[0.4em] border border-white/30 shadow-sm">
           Digital Sanctuary for Students
         </span> */}
