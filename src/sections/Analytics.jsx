@@ -120,7 +120,7 @@ export default function Analytics() {
         {
           label: 'Jam Fokus',
           data: dailyFocus,
-          backgroundColor: 'rgba(255, 139, 61, 0.8)',
+          backgroundColor: 'rgba(217, 119, 87, 0.8)',
           borderRadius: 8,
           borderSkipped: false,
         },
@@ -138,7 +138,7 @@ export default function Analytics() {
       datasets: [
         {
           data: [statusCounts.Rencana, statusCounts.Dikerjakan, statusCounts.Selesai],
-          backgroundColor: ['#FFC97A', '#FFA557', '#FF8B3D'],
+          backgroundColor: ['#F3B664', '#E89A5E', '#D97757'],
           borderWidth: 0,
           hoverOffset: 8,
         },
@@ -160,11 +160,11 @@ export default function Analytics() {
         {
           label: 'Aktivitas Tugas',
           data: weeklyActivity,
-          borderColor: '#FF8B3D',
-          backgroundColor: 'rgba(255, 139, 61, 0.1)',
+          borderColor: '#D97757',
+          backgroundColor: 'rgba(217, 119, 87, 0.1)',
           fill: true,
           tension: 0.4,
-          pointBackgroundColor: '#FF8B3D',
+          pointBackgroundColor: '#D97757',
           pointRadius: 5,
           pointHoverRadius: 7,
         },
@@ -199,11 +199,11 @@ export default function Analytics() {
     },
     scales: {
       x: {
-        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        grid: { color: 'rgba(217, 119, 87, 0.1)' },
         ticks: { color: '#64748b', font: { size: 12 } },
       },
       y: {
-        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        grid: { color: 'rgba(217, 119, 87, 0.1)' },
         ticks: { color: '#64748b', font: { size: 12 } },
         beginAtZero: true,
       },
@@ -237,11 +237,11 @@ export default function Analytics() {
     },
     scales: {
       x: {
-        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        grid: { color: 'rgba(217, 119, 87, 0.1)' },
         ticks: { color: '#64748b', font: { size: 12 } },
       },
       y: {
-        grid: { color: 'rgba(255, 139, 61, 0.1)' },
+        grid: { color: 'rgba(217, 119, 87, 0.1)' },
         ticks: { color: '#64748b', font: { size: 12 } },
         beginAtZero: true,
       },

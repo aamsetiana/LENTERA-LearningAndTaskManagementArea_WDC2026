@@ -3,9 +3,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        "lentera-warm": "#FF8B3D", // Warna Warm Orange Lentera
+        "lentera-warm": "#D97757", // Terracotta - Lebih earthy & warm
         "lentera-dark": "#2D1810", // Warna Dark Warm Lentera
-        "lentera-light": "#FFF4ED", // Warna Light Warm Lentera
+        "lentera-light": "#FAF9F6", // Warna Light Warm Lentera
         "brand-blue": "#2563eb",
         "brand-dark": "#0f172a",
       },
