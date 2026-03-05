@@ -1,6 +1,6 @@
 // src/sections/Workstation.jsx
 import { useState, useEffect } from "react";
-import { AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Repeat, Hand } from "lucide-react";
 import { daysUntilDeadline, getDeadlineStatus } from "../utils/mockData";
 import { ModalInput, useModalInput } from "../components/ModalInput";
 import FocusCompleteModal from "../components/FocusCompleteModal";
@@ -12,7 +12,9 @@ export default function Workstation({ notify }) {
   const [jalan, setJalan] = useState(false);
   const [mode, setMode] = useState("Fokus");
 
-  // Notifikasi modal selesai fokus
+  // STATE BARU: Mode Otomatis
+  const [isAuto, setIsAuto] = useState(true);
+
   const [showFocusModal, setShowFocusModal] = useState(false);
 
   const [tugas, setTugas] = useState(() => {
@@ -23,29 +25,12 @@ export default function Workstation({ notify }) {
   const [playing, setPlaying] = useState(null);
   const [audioInstance, setAudioInstance] = useState(null);
 
-  // Modal State
   const modalAddTask = useModalInput();
 
-  // Suara Terapi Belajar - Pilihan yang lebih baik untuk fokus
   const therapySounds = [
-    {
-      id: "lofi",
-      icon: "🎵",
-      label: "Lo-fi Music",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    },
-    {
-      id: "nature",
-      icon: "🌿",
-      label: "Natural Ambience",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-    },
-    {
-      id: "focus",
-      icon: "🧠",
-      label: "Focus Vibes",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-    },
+    { id: "lofi", icon: "🎵", label: "Lo-fi", url: "/audio/lofi.mp3" },
+    { id: "nature", icon: "🌿", label: "Nature", url: "/audio/nature.mp3" },
+    { id: "focus", icon: "🧠", label: "Focus", url: "/audio/focus.mp3" },
   ];
 
   useEffect(() => {
@@ -62,34 +47,39 @@ export default function Workstation({ notify }) {
     return () => clearInterval(interval);
   }, [jalan, detik]);
 
-  // Separate effect for handling timer completion to avoid cascading renders
+  // LOGIKA TIMER SELESAI (OTOMATIS VS MANUAL)
   useEffect(() => {
     if (detik === 0 && jalan) {
       setJalan(false);
+
       if (mode === "Fokus") {
         const totalFokus =
           Number(localStorage.getItem("total_fokus_lentera") || 0) +
           Number(inputMenit);
         localStorage.setItem("total_fokus_lentera", totalFokus);
-        notify(
-          `Sesi Fokus ${inputMenit} menit selesai! Istirahat sekarang.`,
-          "success",
-        );
+        notify(`Sesi Fokus ${inputMenit} menit selesai!`, "success");
         setShowFocusModal(true);
-        setMode("Istirahat");
-        setDetik(5 * 60);
+
+        // Cek apakah mode otomatis aktif
+        if (isAuto) {
+          setMode("Istirahat");
+          setDetik(5 * 60);
+          setInputMenit(5);
+        }
       } else {
-        notify(
-          "Waktu istirahat selesai. Siap untuk sesi fokus berikutnya?",
-          "info",
-        );
-        setMode("Fokus");
-        setDetik(inputMenit * 60);
+        notify("Waktu istirahat selesai. Siap fokus?", "info");
+
+        // Cek apakah mode otomatis aktif
+        if (isAuto) {
+          setMode("Fokus");
+          setDetik(25 * 60);
+          setInputMenit(25);
+        }
       }
     }
-  }, [detik, jalan, mode, inputMenit, notify]);
+  }, [detik, jalan, mode, inputMenit, notify, isAuto]);
 
-  const radius = 110;
+  const radius = 90;
   const keliling = 2 * Math.PI * radius;
   const offset = keliling - (detik / (inputMenit * 60)) * keliling;
 
@@ -98,6 +88,22 @@ export default function Workstation({ notify }) {
     const baru = Math.max(1, m);
     setInputMenit(baru);
     setDetik(baru * 60);
+  };
+
+  // FUNGSI GANTI MODE SECARA MANUAL
+  const gantiMode = (modeBaru) => {
+    if (jalan) {
+      notify("Hentikan timer dulu untuk ganti mode!", "warning");
+      return;
+    }
+    setMode(modeBaru);
+    if (modeBaru === "Fokus") {
+      setDetik(25 * 60);
+      setInputMenit(25);
+    } else {
+      setDetik(5 * 60);
+      setInputMenit(5);
+    }
   };
 
   const m = Math.floor(detik / 60);
@@ -117,7 +123,7 @@ export default function Workstation({ notify }) {
       newAudio.play();
       setAudioInstance(newAudio);
       setPlaying(sound.id);
-      notify(`${sound.label} sedang diputar`, "success");
+      notify(`${sound.label} diputar`, "success");
     }
   };
 
@@ -135,15 +141,9 @@ export default function Workstation({ notify }) {
     notify("Tugas baru ditambahkan ✓", "success");
   };
 
-  const addTugas = () => {
-    modalAddTask.open();
-  };
-
   const moveTugas = (id, newStatus) => {
     setTugas(tugas.map((t) => (t.id === id ? { ...t, status: newStatus } : t)));
-    const statusLabel =
-      newStatus === "Selesai" ? "diselesaikan" : "dipindahkan";
-    notify(`Tugas ${statusLabel}`, "success");
+    notify(`Tugas dipindahkan`, "success");
   };
 
   const deleteTugas = (id) => {
@@ -154,15 +154,13 @@ export default function Workstation({ notify }) {
   return (
     <section
       id="workstation"
-      className="py-20 md:py-32 px-4 sm:px-8 max-w-7xl mx-auto"
+      className="py-12 md:py-20 px-4 sm:px-6 max-w-7xl mx-auto"
     >
-      {/* Modal Notifikasi Selesai Fokus */}
       <FocusCompleteModal
         isOpen={showFocusModal}
         onClose={() => setShowFocusModal(false)}
         minutes={inputMenit}
       />
-      {/* Modal Add Task */}
       <ModalInput
         isOpen={modalAddTask.isOpen}
         title="Tambah Tugas Baru"
@@ -171,16 +169,11 @@ export default function Workstation({ notify }) {
             name: "teks",
             label: "Deskripsi Tugas",
             type: "textarea",
-            placeholder: "Apa yang ingin kamu kerjakan?",
+            placeholder: "Apa yang dikerjakan?",
             required: true,
             autoFocus: true,
           },
-          {
-            name: "deadline",
-            label: "Deadline",
-            type: "date",
-            required: true,
-          },
+          { name: "deadline", label: "Deadline", type: "date", required: true },
           {
             name: "prioritas",
             label: "Prioritas",
@@ -192,19 +185,48 @@ export default function Workstation({ notify }) {
         onSubmit={handleAddTaskSubmit}
         onClose={modalAddTask.close}
       />
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* KOLOM KIRI: POMODORO PRO */}
         <div className="lg:col-span-4 reveal">
-          <div className="cozy-card p-10 flex flex-col items-center border-t-[12px] border-[#F9A826]">
-            <div className="w-full flex flex-col items-center mb-6">
-              <label className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em] mb-4">
-                Atur Waktu
-              </label>
-              <div className="flex items-center gap-4">
+          <div className="cozy-card p-6 lg:p-7 flex flex-col items-center border-t-[10px] border-[#F9A826] bg-white relative">
+            {/* SAKLAR OTOMATIS (TOGGLE) */}
+            <div className="absolute top-4 right-5 flex items-center gap-2">
+              <span className="text-[8px] font-black text-[#8C7A6B] uppercase tracking-widest">
+                Auto
+              </span>
+              <button
+                onClick={() => setIsAuto(!isAuto)}
+                className={`w-8 h-4 rounded-full relative transition-colors duration-300 ${isAuto ? "bg-[#F9A826]" : "bg-[#EAE0D5]"}`}
+              >
+                <div
+                  className={`w-3 h-3 rounded-full bg-white absolute top-0.5 transition-transform duration-300 ${isAuto ? "translate-x-4.5" : "translate-x-0.5"}`}
+                ></div>
+              </button>
+            </div>
+
+            {/* TOMBOL PILIH MODE (FOKUS / ISTIRAHAT) */}
+            <div className="w-full max-w-[200px] flex bg-[#FAF6F0] rounded-full p-1 mb-6 mt-2">
+              <button
+                onClick={() => gantiMode("Fokus")}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${mode === "Fokus" ? "bg-[#362A1F] text-white shadow-md" : "text-[#8C7A6B] hover:text-[#362A1F]"}`}
+              >
+                Fokus
+              </button>
+              <button
+                onClick={() => gantiMode("Istirahat")}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${mode === "Istirahat" ? "bg-[#F9A826] text-[#362A1F] shadow-md" : "text-[#8C7A6B] hover:text-[#362A1F]"}`}
+              >
+                Jeda
+              </button>
+            </div>
+
+            <div className="w-full flex flex-col items-center mb-5">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => updateWaktu(inputMenit - 5)}
                   disabled={jalan}
-                  className="w-8 h-8 rounded-full bg-[#FAF6F0] font-black disabled:opacity-30 hover:bg-[#EAE0D5] transition-colors"
+                  className="w-7 h-7 rounded-full bg-[#FAF6F0] font-black disabled:opacity-30 hover:bg-[#EAE0D5] transition-colors text-xs"
                 >
                   -
                 </button>
@@ -213,48 +235,48 @@ export default function Workstation({ notify }) {
                   value={inputMenit}
                   onChange={(e) => updateWaktu(Number(e.target.value))}
                   disabled={jalan}
-                  className="w-16 text-center bg-transparent font-black text-xl outline-none"
+                  className="w-12 text-center bg-transparent font-black text-lg outline-none"
                 />
                 <button
                   onClick={() => updateWaktu(inputMenit + 5)}
                   disabled={jalan}
-                  className="w-8 h-8 rounded-full bg-[#FAF6F0] font-black disabled:opacity-30 hover:bg-[#EAE0D5] transition-colors"
+                  className="w-7 h-7 rounded-full bg-[#FAF6F0] font-black disabled:opacity-30 hover:bg-[#EAE0D5] transition-colors text-xs"
                 >
                   +
                 </button>
               </div>
             </div>
 
-            <div className="flex gap-2 mb-8">
+            <div className="flex gap-2 mb-6">
               {[15, 25, 45].map((preset) => (
                 <button
                   key={preset}
                   onClick={() => updateWaktu(preset)}
                   disabled={jalan}
-                  className={`text-[9px] font-bold px-3 py-2 rounded-xl border transition-all ${inputMenit === preset ? "bg-[#362A1F] text-white" : "bg-white"}`}
+                  className={`text-[8px] font-bold px-3 py-1.5 rounded-lg border transition-all ${inputMenit === preset ? "bg-[#362A1F] text-white" : "bg-white"}`}
                 >
                   {preset}m
                 </button>
               ))}
             </div>
 
-            <div className="relative w-64 h-64 flex items-center justify-center mb-10">
+            <div className="relative w-48 h-48 lg:w-56 lg:h-56 flex items-center justify-center mb-8">
               <svg className="absolute w-full h-full -rotate-90">
                 <circle
-                  cx="128"
-                  cy="128"
+                  cx="50%"
+                  cy="50%"
                   r={radius}
                   fill="transparent"
                   stroke="#FAF6F0"
-                  strokeWidth="12"
+                  strokeWidth="8"
                 />
                 <circle
-                  cx="128"
-                  cy="128"
+                  cx="50%"
+                  cy="50%"
                   r={radius}
                   fill="transparent"
-                  stroke="#F9A826"
-                  strokeWidth="12"
+                  stroke={mode === "Fokus" ? "#F9A826" : "#4ade80"}
+                  strokeWidth="8"
                   strokeDasharray={keliling}
                   strokeDashoffset={offset}
                   strokeLinecap="round"
@@ -263,46 +285,42 @@ export default function Workstation({ notify }) {
               </svg>
               <div className="flex flex-col items-center z-10">
                 <div className="flex items-baseline overflow-hidden">
-                  <span
-                    key={`m-${m}`}
-                    className="text-6xl font-black text-[#362A1F] tracking-tighter animate-[fadeScale_0.4s_ease-out]"
-                  >
+                  <span className="text-5xl font-black text-[#362A1F] tracking-tighter animate-[fadeScale_0.4s_ease-out]">
                     {m}
                   </span>
-                  <span className="text-4xl font-black text-[#F9A826] mx-1">
+                  <span
+                    className={`text-3xl font-black mx-1 ${mode === "Fokus" ? "text-[#F9A826]" : "text-green-400"}`}
+                  >
                     :
                   </span>
-                  <span
-                    key={`s-${detik}`}
-                    className="text-6xl font-black text-[#362A1F] tracking-tighter animate-[fadeScale_0.4s_ease-out]"
-                  >
+                  <span className="text-5xl font-black text-[#362A1F] tracking-tighter animate-[fadeScale_0.4s_ease-out]">
                     {displayDetik}
                   </span>
                 </div>
                 <span
-                  className={`text-[9px] font-black uppercase tracking-widest mt-2 ${jalan ? "text-[#F9A826]" : "text-[#8C7A6B]"}`}
+                  className={`text-[8px] font-black uppercase tracking-widest mt-1 ${jalan ? (mode === "Fokus" ? "text-[#F9A826]" : "text-green-500") : "text-[#8C7A6B]"}`}
                 >
-                  {jalan ? `Mode ${mode}` : "Timer Jeda"}
+                  {jalan
+                    ? isAuto
+                      ? `Mode ${mode} (Auto)`
+                      : `Mode ${mode} (Manual)`
+                    : "Timer Jeda"}
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="grid grid-cols-2 gap-3 w-full">
               <button
                 onClick={() => setJalan(!jalan)}
-                className={`py-4 rounded-4xl font-black text-[10px] tracking-widest uppercase shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 ${
-                  jalan
-                    ? "bg-[#362A1F] text-white border-2 border-[#362A1F]"
-                    : "bg-[#F9A826] text-[#362A1F] border-2 border-[#F9A826]"
-                }`}
+                className={`py-3 rounded-[1.5rem] font-black text-[9px] tracking-widest uppercase shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1.5 ${jalan ? "bg-[#362A1F] text-white border-2 border-[#362A1F]" : "bg-[#F9A826] text-[#362A1F] border-2 border-[#F9A826]"}`}
               >
                 {jalan ? (
                   <>
-                    <span className="text-sm">⏸</span> PAUSE
+                    <span className="text-xs">⏸</span> PAUSE
                   </>
                 ) : (
                   <>
-                    <span className="text-sm">▶</span> RESUME
+                    <span className="text-xs">▶</span> RESUME
                   </>
                 )}
               </button>
@@ -311,16 +329,15 @@ export default function Workstation({ notify }) {
                   setDetik(inputMenit * 60);
                   setJalan(false);
                 }}
-                className="py-4 bg-white text-[#8C7A6B] border-2 border-[#EAE0D5] rounded-4xl font-black text-[10px] tracking-widest uppercase active:scale-95 hover:border-[#F9A826] transition-all"
+                className="py-3 bg-white text-[#8C7A6B] border-2 border-[#EAE0D5] rounded-[1.5rem] font-black text-[9px] tracking-widest uppercase active:scale-95 hover:border-[#F9A826] transition-all"
               >
                 RESET
               </button>
             </div>
 
-            {/* Pilihan Terapi Suara */}
-            <div className="mt-8 w-full">
-              <p className="text-xs font-bold text-[#8C7A6B] uppercase tracking-widest mb-3">
-                🎧 Terapi Belajar
+            <div className="mt-6 w-full">
+              <p className="text-[10px] font-bold text-[#8C7A6B] uppercase tracking-widest mb-2 text-center">
+                🎧 Musik
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {therapySounds.map((s) => (
@@ -328,14 +345,12 @@ export default function Workstation({ notify }) {
                     key={s.id}
                     onClick={() => toggleAudio(s)}
                     title={s.label}
-                    className={`w-full py-3 rounded-xl flex flex-col items-center justify-center transition-all border-2 font-black text-[10px] ${
-                      playing === s.id
-                        ? "bg-[#362A1F] text-white border-[#362A1F]"
-                        : "bg-white border-[#EAE0D5] text-[#8C7A6B] hover:border-[#F9A826]"
-                    }`}
+                    className={`w-full py-2 rounded-lg flex flex-col items-center justify-center transition-all border-2 font-black text-[9px] ${playing === s.id ? "bg-[#362A1F] text-white border-[#362A1F]" : "bg-white border-[#EAE0D5] text-[#8C7A6B] hover:border-[#F9A826]"}`}
                   >
-                    <span className="text-lg">{s.icon}</span>
-                    <span className="text-[8px] mt-1">{s.label}</span>
+                    <span className="text-base mb-0.5">{s.icon}</span>
+                    <span className="text-[7px] hidden sm:block">
+                      {s.label}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -346,41 +361,39 @@ export default function Workstation({ notify }) {
         {/* KOLOM KANAN: PAPAN TUGAS (KANBAN) */}
         <div
           className="lg:col-span-8 reveal"
-          style={{ transitionDelay: "200ms" }}
+          style={{ transitionDelay: "150ms" }}
         >
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-3xl md:text-4xl font-black text-[#362A1F] tracking-tighter uppercase">
+          <div className="flex justify-between items-center mb-5">
+            <h3 className="text-2xl md:text-3xl font-black text-[#362A1F] tracking-tighter uppercase">
               Meja Kerja
             </h3>
             <button
-              onClick={addTugas}
-              className="px-6 py-3 bg-[#362A1F] text-white rounded-full font-black text-[10px] tracking-widest uppercase shadow-lg hover:bg-[#F9A826] hover:text-[#362A1F] transition-all"
+              onClick={modalAddTask.open}
+              className="px-5 py-2.5 bg-[#362A1F] text-white rounded-full font-black text-[9px] tracking-widest uppercase shadow-sm hover:bg-[#F9A826] hover:text-[#362A1F] transition-all"
             >
               + TUGAS BARU
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4">
             {["Rencana", "Dikerjakan", "Selesai"].map((st) => {
               const tugasDiKolom = tugas.filter((t) => t.status === st);
 
               return (
                 <div
                   key={st}
-                  className="bg-[#FAF6F0]/80 p-5 rounded-3xl border border-[#EAE0D5] flex flex-col min-h-[500px] max-h-[600px]"
+                  className="bg-[#FAF6F0]/80 p-3 lg:p-4 rounded-[1.5rem] border border-[#EAE0D5] flex flex-col min-h-[450px] max-h-[550px]"
                 >
-                  {/* Header Kolom */}
-                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#EAE0D5]/60">
-                    <span className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.3em]">
+                  <div className="flex items-center justify-between mb-4 pb-2 border-b border-[#EAE0D5]/60">
+                    <span className="text-[9px] font-black text-[#8C7A6B] uppercase tracking-[0.2em]">
                       {st}
                     </span>
-                    <span className="text-[9px] font-black bg-white text-[#8C7A6B] px-3 py-1.5 rounded-full border border-[#EAE0D5] shadow-sm">
+                    <span className="text-[8px] font-black bg-white text-[#8C7A6B] px-2 py-1 rounded-full border border-[#EAE0D5] shadow-sm">
                       {tugasDiKolom.length}
                     </span>
                   </div>
 
-                  {/* List Kartu Tugas */}
-                  <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-2">
+                  <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-1 custom-scrollbar">
                     {tugasDiKolom.map((t) => {
                       const deadlineStatus = getDeadlineStatus(t.deadline);
                       const isUrgent =
@@ -391,33 +404,25 @@ export default function Workstation({ notify }) {
                       return (
                         <div
                           key={t.id}
-                          className={`bg-white p-4 rounded-3xl shadow-sm border-2 transition-all group flex flex-col ${
-                            isUrgent
-                              ? "border-red-300 bg-red-50/30 hover:border-red-500"
-                              : "border-[#EAE0D5] hover:border-[#F9A826]"
-                          }`}
+                          className={`bg-white p-3 lg:p-4 rounded-2xl shadow-sm border-2 transition-all group flex flex-col ${isUrgent ? "border-red-300 bg-red-50/30" : "border-[#EAE0D5] hover:border-[#F9A826]"}`}
                         >
-                          {/* Deadline Warning */}
                           {isUrgent && (
-                            <div className="flex items-center gap-2 mb-2 text-red-600 text-xs font-bold">
-                              <AlertCircle className="h-4 w-4" />
+                            <div className="flex items-center gap-1.5 mb-2 text-red-600 text-[9px] font-black uppercase tracking-widest">
+                              <AlertCircle className="h-3 w-3" />
                               <span>{deadlineStatus.label}</span>
                             </div>
                           )}
 
-                          {/* Teks Tugas */}
-                          <p className="text-sm font-bold text-[#362A1F] mb-3 leading-relaxed flex-1">
+                          <p className="text-xs font-bold text-[#362A1F] mb-3 leading-snug flex-1">
                             {t.teks}
                           </p>
 
-                          {/* Deadline Info */}
-                          <div className="flex items-center gap-2 mb-3 text-[11px] text-[#8C7A6B]">
+                          <div className="flex items-center gap-1.5 mb-3 text-[9px] font-bold text-[#8C7A6B] uppercase tracking-widest">
                             <Clock className="h-3 w-3" />
                             <span>{t.deadline}</span>
                           </div>
 
-                          {/* Tombol Aksi */}
-                          <div className="flex justify-between items-center pt-3 border-t border-[#FAF6F0]">
+                          <div className="flex justify-between items-center pt-2 border-t border-[#FAF6F0]">
                             {st !== "Selesai" ? (
                               <button
                                 onClick={() =>
@@ -431,7 +436,7 @@ export default function Workstation({ notify }) {
                                 Lanjut →
                               </button>
                             ) : (
-                              <span className="px-3 py-1.5 bg-green-50 text-green-600 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
+                              <span className="px-2 py-1.5 bg-green-50 text-green-600 rounded-full text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3" /> Tuntas
                               </span>
                             )}
