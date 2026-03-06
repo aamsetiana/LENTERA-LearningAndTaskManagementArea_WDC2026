@@ -363,93 +363,90 @@ export default function Analytics() {
                 ✅ Performa Mingguan
               </h3>
             </div>
-            <div className="h-[280px]">
-              <Bar data={barChartData} options={barChartOptions} />
-            </div>
-          </div>
 
-          {/* Grid 3 Kolom untuk Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Metrik 1: Hari On Track */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-orange-100/50 hover:border-orange-300 transition-all group">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                  Hari On Track
-                </span>
-                <span className="text-2xl">📅</span>
+            {/* Grid 3 Kolom untuk Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Metrik 1: Hari On Track */}
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-orange-100/50 hover:border-orange-300 transition-all group">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+                    Hari On Track
+                  </span>
+                  <span className="text-2xl">📅</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-orange-600">
+                    {performa.hariOnTrack}
+                  </span>
+                  <span className="text-lg font-bold text-slate-400">/7</span>
+                </div>
+                <div className="mt-3 w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 h-full transition-all duration-500 rounded-full"
+                    style={{ width: `${(performa.hariOnTrack / 7) * 100}%` }}
+                  />
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  Hari produktif minggu ini
+                </p>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-orange-600">
-                  {performa.hariOnTrack}
-                </span>
-                <span className="text-lg font-bold text-slate-400">/7</span>
-              </div>
-              <div className="mt-3 w-full bg-orange-100 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 h-full transition-all duration-500 rounded-full"
-                  style={{ width: `${(performa.hariOnTrack / 7) * 100}%` }}
-                />
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Hari produktif minggu ini
-              </p>
-            </div>
 
-            {/* Metrik 2: Rata-rata Tugas */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100/50 hover:border-emerald-300 transition-all group">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                  Rata-rata/Hari
-                </span>
-                <span className="text-2xl">📊</span>
+              {/* Metrik 2: Rata-rata Tugas */}
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100/50 hover:border-emerald-300 transition-all group">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+                    Rata-rata/Hari
+                  </span>
+                  <span className="text-2xl">📊</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-emerald-600">
+                    {performa.rataRata}
+                  </span>
+                  <span className="text-xs font-bold text-slate-400">tasks</span>
+                </div>
+                <p className="text-xs text-slate-500 mt-3">
+                  Konsistensi penyelesaian tugas
+                </p>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-emerald-600">
-                  {performa.rataRata}
-                </span>
-                <span className="text-xs font-bold text-slate-400">tasks</span>
-              </div>
-              <p className="text-xs text-slate-500 mt-3">
-                Konsistensi penyelesaian tugas
-              </p>
-            </div>
 
-            {/* Metrik 3: Efisiensi */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-amber-100/50 hover:border-amber-300 transition-all group">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                  Efisiensi Belajar
-                </span>
-                <span className="text-2xl">⚡</span>
+              {/* Metrik 3: Efisiensi */}
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-amber-100/50 hover:border-amber-300 transition-all group">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+                    Efisiensi Belajar
+                  </span>
+                  <span className="text-2xl">⚡</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-amber-600">
+                    {performa.efisiensi}
+                  </span>
+                  <span className="text-lg font-bold text-slate-400">%</span>
+                </div>
+                <div className="mt-3 w-full bg-amber-100 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full transition-all duration-500 rounded-full"
+                    style={{ width: `${performa.efisiensi}%` }}
+                  />
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  Target pencapaian minggu ini
+                </p>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-3xl font-black text-amber-600">
-                  {performa.efisiensi}
-                </span>
-                <span className="text-lg font-bold text-slate-400">%</span>
-              </div>
-              <div className="mt-3 w-full bg-amber-100 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 h-full transition-all duration-500 rounded-full"
-                  style={{ width: `${performa.efisiensi}%` }}
-                />
-              </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Target pencapaian minggu ini
-              </p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Footer Tip */}
-      <div className="reveal mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
+      {/* <div className="reveal mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
         <p className="text-slate-700 text-sm">
           <span className="font-semibold">💡 Tips:</span> Pantau grafik ini
           setiap minggu untuk melihat pola pembelajaran Anda. Tingkatkan target
           fokus sebesar 10% setiap minggu untuk hasil optimal!
         </p>
-      </div>
+      </div> */}
     </section>
   );
 }
