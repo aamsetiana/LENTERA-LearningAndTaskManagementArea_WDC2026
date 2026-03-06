@@ -36,15 +36,15 @@ ChartJS.register(
 );
 
 const StatCard = ({ icon: Icon, label, value, unit, color }) => (
-  <div className="bg-white rounded-[2rem] p-8 border border-[#EAE0D5] hover:shadow-lg transition-all hover:border-[#F9A826] group">
+  <div className="bg-white rounded-[2rem] p-8 border border-[#EAE0D5] hover:shadow-lg transition-all hover:border-[#F9A826] group h-full">
     <div className="flex items-start gap-4">
       <div
         className={`p-4 rounded-2xl ${color} shadow-sm transition-transform group-hover:scale-110`}
       >
         <Icon className="h-6 w-6 text-white" />
       </div>
-      <div className="flex-1">
-        <p className="text-[10px] font-black uppercase tracking-widest text-[#8C7A6B] mb-2">
+      <div className="flex-1 min-w-0">
+        <p className="text-[10px] font-black uppercase tracking-widest text-[#8C7A6B] mb-2 truncate">
           {label}
         </p>
         <div className="flex items-baseline gap-2">
@@ -96,8 +96,6 @@ export default function Analytics() {
     const dataTugas = JSON.parse(localStorage.getItem("tugas_lentera")) || [];
     const totalFokusStr = localStorage.getItem("total_fokus_lentera") || "0";
     const totalFokus = parseInt(totalFokusStr) || 0;
-
-    // AMBIL DATA SESI POMODORO ASLI DARI MEJA KERJA
     const sesiPomodoroStr =
       localStorage.getItem("sesi_pomodoro_lentera") || "0";
     const sesiPomodoro = parseInt(sesiPomodoroStr) || 0;
@@ -133,16 +131,12 @@ export default function Analytics() {
     setStatistik({
       totalFokus: parseFloat((totalFokus / 60).toFixed(1)),
       tugasSelesai: selesai,
-      sesiPomodoro: sesiPomodoro, // SEKARANG 100% AKURAT
+      sesiPomodoro: sesiPomodoro,
       targetTercapai: persentase,
       totalTugas: total,
     });
 
-    setPerforma({
-      hariOnTrack: hariOnTrack,
-      rataRata: rataRata,
-      efisiensi: persentase,
-    });
+    setPerforma({ hariOnTrack, rataRata, efisiensi: persentase });
 
     setBarChartData({
       labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"],
@@ -191,10 +185,14 @@ export default function Analytics() {
     });
   }, []);
 
-  const barChartOptions = {
+  const commonOptions = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
+  };
+
+  const barChartOptions = {
+    ...commonOptions,
     scales: {
       x: {
         grid: { display: false },
@@ -212,11 +210,11 @@ export default function Analytics() {
   };
 
   const doughnutChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
+    ...commonOptions,
     cutout: "75%",
     plugins: {
       legend: {
+        display: true,
         position: "bottom",
         labels: {
           color: "#8C7A6B",
@@ -224,26 +222,6 @@ export default function Analytics() {
           usePointStyle: true,
           font: { family: "Poppins", size: 11, weight: "bold" },
         },
-      },
-    },
-  };
-
-  const lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: {
-          color: "#8C7A6B",
-          font: { family: "Poppins", size: 10, weight: "bold" },
-        },
-      },
-      y: {
-        grid: { color: "#FAF6F0" },
-        ticks: { color: "#8C7A6B", font: { family: "Poppins", size: 10 } },
-        beginAtZero: true,
       },
     },
   };
@@ -265,8 +243,9 @@ export default function Analytics() {
           </div>
         </div>
 
+        {/* Atas: 2 kolom iPad, 4 kolom Desktop */}
         <div
-          className="grid md:grid-cols-4 gap-6 mb-8 reveal"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8 reveal"
           style={{ transitionDelay: "100ms" }}
         >
           <StatCard
@@ -303,6 +282,7 @@ export default function Analytics() {
           className="grid md:grid-cols-2 gap-6 reveal"
           style={{ transitionDelay: "200ms" }}
         >
+          {/* Charts */}
           <div className="bg-white rounded-[2.5rem] p-8 border border-[#EAE0D5] shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3 mb-8">
               <BarChart3 className="h-6 w-6 text-[#D97757]" />
@@ -310,7 +290,7 @@ export default function Analytics() {
                 Durasi Fokus (Jam)
               </h3>
             </div>
-            <div className="h-[280px] w-full">
+            <div className="h-[300px] w-full">
               <Bar data={barChartData} options={barChartOptions} />
             </div>
           </div>
@@ -322,7 +302,7 @@ export default function Analytics() {
                 Distribusi Tugas
               </h3>
             </div>
-            <div className="h-[280px] flex items-center justify-center">
+            <div className="h-[300px] flex items-center justify-center">
               <Doughnut
                 data={doughnutChartData}
                 options={doughnutChartOptions}
@@ -337,86 +317,71 @@ export default function Analytics() {
                 Tren Aktivitas
               </h3>
             </div>
-            <div className="h-[200px] w-full">
-              <Line data={lineChartData} options={lineChartOptions} />
+            <div className="h-[250px] w-full">
+              <Line data={lineChartData} options={barChartOptions} />
             </div>
           </div>
 
-          <div className="reveal bg-gradient-to-br from-white to-orange-50/30 rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-400">
+          {/* PERFORMA MINGGUAN - FIX ANTI BABLAS IPAD */}
+          <div className="reveal bg-gradient-to-br from-white to-orange-50/30 rounded-3xl p-6 md:p-8 border border-orange-100 shadow-sm transition-all fade-in-up delay-400">
             <div className="flex items-center gap-2 mb-8">
               <CheckCircle2 className="h-5 w-5 text-orange-600" />
               <h3 className="text-lg font-bold text-slate-900">
                 ✅ Performa Mingguan
               </h3>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-orange-100/50 hover:border-orange-300 transition-all group">
+            {/* Grid Metrics: 1 kolom (Mobile), 2 kolom (Tablet/iPad), 3 kolom (Desktop Besar) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-orange-100/50 group">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
+                  <span className="text-[10px] font-black uppercase text-slate-600">
                     Hari On Track
                   </span>
-                  <span className="text-2xl">📅</span>
+                  <span className="text-xl">📅</span>
                 </div>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-orange-600">
                     {performa.hariOnTrack}
                   </span>
-                  <span className="text-lg font-bold text-slate-400">/7</span>
+                  <span className="text-sm text-slate-400">/7</span>
                 </div>
                 <div className="mt-3 w-full bg-orange-100 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-orange-500 to-orange-600 h-full transition-all duration-500 rounded-full"
+                    className="bg-orange-500 h-full transition-all duration-500"
                     style={{ width: `${(performa.hariOnTrack / 7) * 100}%` }}
-                  />
+                  ></div>
                 </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Hari produktif minggu ini
+              </div>
+              <div className="bg-white/80 p-6 rounded-2xl border border-emerald-100/50">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-black uppercase text-slate-600">
+                    Rata-rata
+                  </span>
+                  <span className="text-xl">📊</span>
+                </div>
+                <p className="text-3xl font-black text-emerald-600">
+                  {performa.rataRata}
+                </p>
+                <p className="text-[10px] text-slate-500 mt-2 tracking-widest uppercase font-bold">
+                  tasks per hari
                 </p>
               </div>
-
-              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100/50 hover:border-emerald-300 transition-all group">
+              <div className="bg-white/80 p-6 rounded-2xl border border-amber-100/50 sm:col-span-2 xl:col-span-1">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                    Rata-rata/Hari
+                  <span className="text-[10px] font-black uppercase text-slate-600">
+                    Efisiensi
                   </span>
-                  <span className="text-2xl">📊</span>
+                  <span className="text-xl">⚡</span>
                 </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-emerald-600">
-                    {performa.rataRata}
-                  </span>
-                  <span className="text-xs font-bold text-slate-400">
-                    tasks
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 mt-3">
-                  Konsistensi penyelesaian tugas
+                <p className="text-3xl font-black text-amber-600">
+                  {performa.efisiensi}%
                 </p>
-              </div>
-
-              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-amber-100/50 hover:border-amber-300 transition-all group">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
-                    Efisiensi Belajar
-                  </span>
-                  <span className="text-2xl">⚡</span>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-amber-600">
-                    {performa.efisiensi}
-                  </span>
-                  <span className="text-lg font-bold text-slate-400">%</span>
-                </div>
                 <div className="mt-3 w-full bg-amber-100 rounded-full h-2 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full transition-all duration-500 rounded-full"
+                    className="bg-amber-500 h-full transition-all duration-500"
                     style={{ width: `${performa.efisiensi}%` }}
-                  />
+                  ></div>
                 </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Target pencapaian minggu ini
-                </p>
               </div>
             </div>
           </div>
