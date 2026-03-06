@@ -13,13 +13,11 @@ import { daysUntilDeadline, getDeadlineStatus } from "../utils/mockData";
 import { ModalInput, useModalInput } from "../components/ModalInput";
 
 export default function Workstation({ notify }) {
-  // --- STATE & LOGIKA ---
   const [inputMenit, setInputMenit] = useState(25);
   const [detik, setDetik] = useState(25 * 60);
   const [jalan, setJalan] = useState(false);
   const [mode, setMode] = useState("Fokus");
 
-  // Memori untuk nyimpen waktu
   const [fokusDurasi, setFokusDurasi] = useState(25);
   const [istirahatDurasi, setIstirahatDurasi] = useState(5);
 
@@ -55,10 +53,9 @@ export default function Workstation({ notify }) {
     return () => clearInterval(interval);
   }, [jalan, detik]);
 
-  // LOGIKA DIPERBARUI: SUARA ALARM & CONFETTI (TANPA MODAL)
+  // LOGIKA PENCATAT SESI POMODORO
   useEffect(() => {
     if (detik === 0 && jalan) {
-      // 1. MAINKAN SUARA ALARM BEEP OTOMATIS
       const alarmSound = new Audio(
         "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
       );
@@ -70,10 +67,13 @@ export default function Workstation({ notify }) {
           Number(inputMenit);
         localStorage.setItem("total_fokus_lentera", totalFokus);
 
-        // 2. NOTIFIKASI KECIL (HILANG SENDIRI)
+        // PENCATAT JUMLAH SESI ASLI
+        const totalSesi =
+          Number(localStorage.getItem("sesi_pomodoro_lentera") || 0) + 1;
+        localStorage.setItem("sesi_pomodoro_lentera", totalSesi);
+
         notify(`Sesi Fokus selesai! Waktunya istirahat.`, "success");
 
-        // 3. LEDAKAN CONFETTI KHUSUS SELESAI FOKUS
         confetti({
           particleCount: 150,
           spread: 80,
@@ -91,7 +91,6 @@ export default function Workstation({ notify }) {
           setJalan(false);
         }
       } else {
-        // NOTIFIKASI KECIL (HILANG SENDIRI)
         notify("Waktu istirahat selesai. Ayo mulai fokus!", "info");
 
         if (isAuto) {
@@ -207,9 +206,6 @@ export default function Workstation({ notify }) {
     notify("Tugas dihapus", "warning");
   };
 
-  // =====================================================================
-  // BAGIAN UI CSS DI BAWAH INI 100% SAMA PERSIS, TIDAK ADA YANG DIUBAH!
-  // =====================================================================
   return (
     <section
       id="workstation"
