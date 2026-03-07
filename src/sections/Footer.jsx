@@ -2,7 +2,7 @@
 export default function Footer() {
   return (
     <footer className="mt-20 border-t border-[#EAE0D5] bg-white relative z-10">
-      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
+      <div className="max-w-7xl mx-auto px-6 mdd:px-12 py-12 md:py-16">
         {/* Grid Utama Footer */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 items-start">
           {/* Kiri: Nama Aplikasi & Deskripsi Singkat */}
