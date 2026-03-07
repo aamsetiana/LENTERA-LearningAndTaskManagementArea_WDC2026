@@ -129,21 +129,6 @@ export default function Workstation({ notify }) {
     else setIstirahatDurasi(baru);
   };
 
-  const gantiMode = (modeBaru) => {
-    if (jalan) {
-      notify("Hentikan timer dulu untuk ganti mode!", "warning");
-      return;
-    }
-    setMode(modeBaru);
-    if (modeBaru === "Fokus") {
-      setDetik(fokusDurasi * 60);
-      setInputMenit(fokusDurasi);
-    } else {
-      setDetik(istirahatDurasi * 60);
-      setInputMenit(istirahatDurasi);
-    }
-  };
-
   // FUNGSI GANTI MODE SECARA MANUAL
   const gantiMode = (modeBaru) => {
     if (jalan) {
