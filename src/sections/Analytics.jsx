@@ -23,7 +23,6 @@ import {
   ArcElement,
 } from "chart.js";
 
-// Registrasi komponen Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -36,7 +35,6 @@ ChartJS.register(
   ArcElement,
 );
 
-// Komponen Kartu Statistik
 const StatCard = ({ icon: Icon, label, value, unit, color }) => (
   <div className="bg-white rounded-[2rem] p-8 border border-[#EAE0D5] hover:shadow-lg transition-all hover:border-[#F9A826] group">
     <div className="flex items-start gap-4">
@@ -95,38 +93,35 @@ export default function Analytics() {
   });
 
   useEffect(() => {
-    // 1. Ambil data dari localStorage (Sinkron dengan Meja Kerja)
     const dataTugas = JSON.parse(localStorage.getItem("tugas_lentera")) || [];
     const totalFokusStr = localStorage.getItem("total_fokus_lentera") || "0";
     const totalFokus = parseInt(totalFokusStr) || 0;
 
-    // 2. Hitung statistik dasar
+    // AMBIL DATA SESI POMODORO ASLI DARI MEJA KERJA
+    const sesiPomodoroStr =
+      localStorage.getItem("sesi_pomodoro_lentera") || "0";
+    const sesiPomodoro = parseInt(sesiPomodoroStr) || 0;
+
     const selesai = dataTugas.filter((t) => t.status === "Selesai").length;
     const total = dataTugas.length;
     const persentase = total > 0 ? Math.round((selesai / total) * 100) : 0;
-    const sesiPomodoro = Math.round(totalFokus / 25) || 0;
 
-    // 3. Hitung Performa Mingguan
     const uniqueDays = new Set(
       dataTugas.map((t) => new Date(t.id).toDateString()),
     ).size;
     const hariOnTrack = uniqueDays > 7 ? 7 : uniqueDays;
     const rataRata = total > 0 ? (total / 7).toFixed(1) : 0;
 
-    // 4. Hitung data chart
-    // A. Bar Chart (Durasi Fokus Harian)
     const today = new Date().getDay();
-    const dayIndex = today === 0 ? 6 : today - 1; // Senin = 0
+    const dayIndex = today === 0 ? 6 : today - 1;
     const dailyFocus = [0, 0, 0, 0, 0, 0, 0];
     dailyFocus[dayIndex] = parseFloat((totalFokus / 60).toFixed(1));
 
-    // B. Doughnut Chart (Status Tugas)
     const statusCounts = { Rencana: 0, Dikerjakan: 0, Selesai: 0 };
     dataTugas.forEach((t) => {
       if (statusCounts[t.status] !== undefined) statusCounts[t.status]++;
     });
 
-    // C. Line Chart (Aktivitas Mingguan)
     const weeklyActivity = [0, 0, 0, 0, 0, 0, 0];
     dataTugas.forEach((t) => {
       const d = new Date(t.id);
@@ -135,11 +130,10 @@ export default function Analytics() {
       weeklyActivity[idx]++;
     });
 
-    // Update all state at once to avoid cascading renders
     setStatistik({
-      totalFokus: parseFloat((totalFokus / 60).toFixed(1)), // Konversi ke jam
+      totalFokus: parseFloat((totalFokus / 60).toFixed(1)),
       tugasSelesai: selesai,
-      sesiPomodoro: sesiPomodoro,
+      sesiPomodoro: sesiPomodoro, // SEKARANG 100% AKURAT
       targetTercapai: persentase,
       totalTugas: total,
     });
@@ -156,7 +150,7 @@ export default function Analytics() {
         {
           label: "Jam Fokus",
           data: dailyFocus,
-          backgroundColor: "#D97757", // Warna bata Lentera
+          backgroundColor: "#D97757",
           borderRadius: 8,
           borderSkipped: false,
         },
@@ -172,7 +166,7 @@ export default function Analytics() {
             statusCounts.Dikerjakan,
             statusCounts.Selesai,
           ],
-          backgroundColor: ["#EAE0D5", "#F9A826", "#362A1F"], // Krem, Oranye, Hitam
+          backgroundColor: ["#EAE0D5", "#F9A826", "#362A1F"],
           borderWidth: 0,
           hoverOffset: 8,
         },
@@ -197,7 +191,6 @@ export default function Analytics() {
     });
   }, []);
 
-  // Opsi Konfigurasi Chart agar tampilannya estetik
   const barChartOptions = {
     responsive: true,
     maintainAspectRatio: true,
@@ -258,7 +251,6 @@ export default function Analytics() {
   return (
     <section id="statistik" className="py-20 px-4 sm:px-6 lg:px-8 bg-[#FAF6F0]">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="reveal mb-12 flex items-center gap-4">
           <div className="p-4 bg-[#362A1F] rounded-[2rem] shadow-xl">
             <TrendingUp className="h-8 w-8 text-[#F9A826]" />
@@ -273,7 +265,6 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* 4 Kartu Statistik Teratas */}
         <div
           className="grid md:grid-cols-4 gap-6 mb-8 reveal"
           style={{ transitionDelay: "100ms" }}
@@ -308,12 +299,10 @@ export default function Analytics() {
           />
         </div>
 
-        {/* Grid Chart */}
         <div
           className="grid md:grid-cols-2 gap-6 reveal"
           style={{ transitionDelay: "200ms" }}
         >
-          {/* Bar Chart */}
           <div className="bg-white rounded-[2.5rem] p-8 border border-[#EAE0D5] shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3 mb-8">
               <BarChart3 className="h-6 w-6 text-[#D97757]" />
@@ -326,7 +315,6 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* Doughnut Chart */}
           <div className="bg-white rounded-[2.5rem] p-8 border border-[#EAE0D5] shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3 mb-8">
               <PieChart className="h-6 w-6 text-[#F9A826]" />
@@ -342,7 +330,6 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* Line Chart */}
           <div className="bg-white rounded-[2.5rem] p-8 border border-[#EAE0D5] shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-3 mb-8">
               <TrendingUp className="h-6 w-6 text-[#362A1F]" />
@@ -355,7 +342,6 @@ export default function Analytics() {
             </div>
           </div>
 
-          {/* Kartu Ringkasan Performa - Redesign Modern Putih */}
           <div className="reveal bg-gradient-to-br from-white to-orange-50/30 rounded-3xl p-8 border border-orange-100 shadow-sm hover:shadow-md transition-all fade-in-up delay-400">
             <div className="flex items-center gap-2 mb-8">
               <CheckCircle2 className="h-5 w-5 text-orange-600" />
@@ -364,9 +350,7 @@ export default function Analytics() {
               </h3>
             </div>
 
-            {/* Grid 3 Kolom untuk Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Metrik 1: Hari On Track */}
               <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-orange-100/50 hover:border-orange-300 transition-all group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
@@ -391,7 +375,6 @@ export default function Analytics() {
                 </p>
               </div>
 
-              {/* Metrik 2: Rata-rata Tugas */}
               <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100/50 hover:border-emerald-300 transition-all group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
@@ -403,14 +386,15 @@ export default function Analytics() {
                   <span className="text-3xl font-black text-emerald-600">
                     {performa.rataRata}
                   </span>
-                  <span className="text-xs font-bold text-slate-400">tasks</span>
+                  <span className="text-xs font-bold text-slate-400">
+                    tasks
+                  </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-3">
                   Konsistensi penyelesaian tugas
                 </p>
               </div>
 
-              {/* Metrik 3: Efisiensi */}
               <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-amber-100/50 hover:border-amber-300 transition-all group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-semibold text-slate-600 uppercase tracking-widest">
@@ -438,15 +422,6 @@ export default function Analytics() {
           </div>
         </div>
       </div>
-
-      {/* Footer Tip */}
-      {/* <div className="reveal mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
-        <p className="text-slate-700 text-sm">
-          <span className="font-semibold">💡 Tips:</span> Pantau grafik ini
-          setiap minggu untuk melihat pola pembelajaran Anda. Tingkatkan target
-          fokus sebesar 10% setiap minggu untuk hasil optimal!
-        </p>
-      </div> */}
     </section>
   );
 }

@@ -8,21 +8,65 @@ export default function Dashboard() {
     totalCatatan: 0,
     totalFokus: 0,
     persentase: 0,
+    grafikDeadline: [],
   });
 
   useEffect(() => {
-    // 1. Ambil data asli dari Local Storage yang sudah dibuat di section lain
+    // 1. Ambil data asli dari Local Storage
     const dataTugas = JSON.parse(localStorage.getItem("tugas_lentera")) || [];
     const dataJurnal = JSON.parse(localStorage.getItem("jurnal_lentera")) || [];
     const dataFokus = localStorage.getItem("total_fokus_lentera") || 0;
 
-    // 2. Hitung angka real untuk Dashboard
+    // 2. Hitung angka untuk Kartu 1 & 2
     const selesai = dataTugas.filter((t) => t.status === "Selesai").length;
     const total = dataTugas.length;
     const persen = total > 0 ? Math.round((selesai / total) * 100) : 0;
     const berjalan = total - selesai;
 
-    // 3. Update state tampilan
+    // 3. LOGIKA UNTUK KARTU 3 (Selalu Mulai dari Senin - Minggu)
+    const namaHari = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+    // Cari tanggal untuk hari Senin di minggu ini
+    const hariIni = new Date();
+    const hariKe = hariIni.getDay(); // 0 = Minggu, 1 = Senin, dst.
+    // Jika hari ini Minggu (0), mundur 6 hari. Jika bukan, mundur (hariKe - 1) hari.
+    const selisihKeSenin = hariIni.getDate() - hariKe + (hariKe === 0 ? -6 : 1);
+    const seninMingguIni = new Date(hariIni.setDate(selisihKeSenin));
+
+    const grafikReal = [];
+    let maxTugas = 0;
+
+    for (let i = 0; i < 7; i++) {
+      const targetDate = new Date(seninMingguIni);
+      targetDate.setDate(seninMingguIni.getDate() + i);
+
+      // Bikin format YYYY-MM-DD aman (mengatasi masalah zona waktu)
+      const year = targetDate.getFullYear();
+      const month = String(targetDate.getMonth() + 1).padStart(2, "0");
+      const day = String(targetDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${day}`;
+
+      const hariSingkat = namaHari[targetDate.getDay()];
+
+      const jumlahTugas = dataTugas.filter(
+        (t) => t.deadline === dateString && t.status !== "Selesai",
+      ).length;
+      if (jumlahTugas > maxTugas) maxTugas = jumlahTugas;
+
+      grafikReal.push({ hari: hariSingkat, jumlah: jumlahTugas });
+    }
+
+    const finalGrafik = grafikReal.map((item) => ({
+      h: item.hari,
+      angka: item.jumlah,
+      // Tinggi minimum 10% biar baloknya kelihatan walau kosong
+      p:
+        maxTugas > 0
+          ? `${Math.max((item.jumlah / maxTugas) * 100, 10)}%`
+          : "10%",
+    }));
+
+    // 4. Update semua state
     setStatistik({
       totalTugas: total,
       tugasSelesai: selesai,
@@ -30,19 +74,9 @@ export default function Dashboard() {
       totalCatatan: dataJurnal.length,
       totalFokus: dataFokus,
       persentase: persen,
+      grafikDeadline: finalGrafik,
     });
   }, []);
-
-  // Data dummy untuk grafik visual agar tetap terlihat estetik
-  const dataGrafik = [
-    { h: "S", p: "40%" },
-    { h: "S", p: "70%" },
-    { h: "R", p: "50%" },
-    { h: "K", p: "90%" },
-    { h: "J", p: "30%" },
-    { h: "S", p: "60%" },
-    { h: "M", p: "45%" },
-  ];
 
   return (
     <section
@@ -67,7 +101,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-        {/* KARTU 1: TUGAS BERJALAN (REAL) */}
+        {/* KARTU 1: TUGAS BERJALAN */}
         <div className="reveal cozy-card p-8 md:p-10 flex flex-col justify-between min-h-[320px] group border-l-[12px] border-l-[#2D1810]">
           <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
             Antrean Tugas
@@ -87,7 +121,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* KARTU 2: DURASI FOKUS & PROGRES (REAL DARI POMODORO) */}
+        {/* KARTU 2: DURASI FOKUS & PROGRES */}
         <div
           className="reveal cozy-card p-8 md:p-10 border-b-[12px] border-[#D97757] min-h-[320px] flex flex-col justify-between"
           style={{ transitionDelay: "200ms" }}
@@ -112,41 +146,49 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* KARTU 3: JURNAL & TREN (REAL DARI NOTES) */}
+        {/* KARTU 3: GRAFIK DEADLINE TUGAS MINGGU INI */}
         <div
-          className="reveal cozy-card p-8 md:p-10 bg-[#2D1810] text-white flex flex-col justify-between min-h-[320px] shadow-2xl shadow-[#2D1810]/40"
+          className="reveal cozy-card p-8 md:p-10 flex flex-col justify-between min-h-[320px] border-r-[12px] border-[#D97757]"
           style={{ transitionDelay: "400ms" }}
         >
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">
-                Total Jurnal
+              <p className="text-[10px] font-black text-[#8C7A6B] uppercase tracking-[0.4em]">
+                Beban Mingguan
               </p>
-              <h5 className="text-xs font-bold text-[#D97757] mt-1">
-                {statistik.totalCatatan} Catatan
+              {/* Judulnya saya ganti biar lebih masuk akal */}
+              <h5 className="text-[11px] font-bold text-[#D97757] mt-1 uppercase tracking-widest">
+                Deadline Minggu Ini
               </h5>
             </div>
-            <span className="text-[9px] bg-white/10 px-3 py-1.5 rounded-xl border border-white/5 font-bold tracking-widest">
-              AKTIVITAS
-            </span>
           </div>
 
-          {/* Grafik Visual */}
-          <div className="flex items-end justify-between h-32 gap-2 md:gap-3 px-1">
-            {dataGrafik.map((item, index) => (
-              <div
-                key={index}
-                className="flex-1 flex flex-col items-center gap-3 h-full justify-end group cursor-pointer"
-              >
+          {/* Grafik Visual Real */}
+          <div className="flex items-end justify-between h-32 gap-2 md:gap-3 px-1 mt-auto">
+            {statistik.grafikDeadline &&
+              statistik.grafikDeadline.map((item, index) => (
                 <div
-                  style={{ height: item.p }}
-                  className="w-full bg-[#D97757] rounded-t-xl opacity-80 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_20px_rgba(217,119,87,0.3)]"
-                ></div>
-                <span className="text-[9px] text-white/30 font-bold group-hover:text-white transition-colors">
-                  {item.h}
-                </span>
-              </div>
-            ))}
+                  key={index}
+                  className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group cursor-pointer"
+                >
+                  <span className="text-[10px] font-black text-[#2D1810] opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all">
+                    {item.angka > 0 ? item.angka : "-"}
+                  </span>
+
+                  <div
+                    style={{ height: item.p }}
+                    className={`w-full rounded-t-lg transition-all duration-500 group-hover:scale-x-110 ${
+                      item.angka > 0
+                        ? "bg-[#D97757] shadow-[0_0_15px_rgba(217,119,87,0.3)]"
+                        : "bg-[#EAE0D5]"
+                    }`}
+                  ></div>
+
+                  <span className="text-[9px] text-[#8C7A6B] font-bold mt-1">
+                    {item.h}
+                  </span>
+                </div>
+              ))}
           </div>
         </div>
       </div>
