@@ -440,13 +440,13 @@ export default function Analytics() {
       </div>
 
       {/* Footer Tip */}
-      <div className="reveal mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
+      {/* <div className="reveal mt-12 p-6 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-100 fade-in-up delay-500">
         <p className="text-slate-700 text-sm">
           <span className="font-semibold">💡 Tips:</span> Pantau grafik ini
           setiap minggu untuk melihat pola pembelajaran Anda. Tingkatkan target
           fokus sebesar 10% setiap minggu untuk hasil optimal!
         </p>
-      </div>
+      </div> */}
     </section>
   );
 }
